@@ -9,6 +9,7 @@ import json
 import subprocess
 import datetime
 import time
+import shutil
 from typing import List, Optional, Dict, Any, Tuple
 
 # Third-party imports
@@ -681,12 +682,8 @@ class DockerManager:
         # Create workspace directory in container if needed
         try:
             # Get current workspace name
-            workspace_name = os.getenv("CAI_WORKSPACE", "cai_default")
-            
-            # Make sure workspace name is valid
-            if not all(c.isalnum() or c in ['_', '-'] for c in workspace_name):
-                workspace_name = "cai_default"
-            
+            workspace_name = os.getenv("CAI_WORKSPACE", None)
+
             # Create workspace directory path inside container
             container_workspace_path = f"/workspace/workspaces/{workspace_name}"
             
@@ -1882,6 +1879,11 @@ class WorkspaceCommand(Command):
             "Copy files between host and container",
             self.handle_copy_subcommand
         )
+        self.add_subcommand(
+            "delete",
+            "Delete the current workspace",
+            self.handle_delete_subcommand
+        )
 
     def handle(self, args: Optional[List[str]] = None) -> bool:
         """Handle the workspace command.
@@ -1906,7 +1908,7 @@ class WorkspaceCommand(Command):
     def handle_get(self, _: Optional[List[str]] = None) -> bool:
         """Display the current workspace name and directory information."""
         # Get workspace info
-        workspace_name = os.getenv("CAI_WORKSPACE", "cai_default")
+        workspace_name = os.getenv("CAI_WORKSPACE", None)
         workspace_dir = self._get_workspace_dir()
         
         # Check if a container is active
@@ -2116,11 +2118,11 @@ class WorkspaceCommand(Command):
             The workspace directory path
         """
         base_dir = os.getenv("CAI_WORKSPACE_DIR", "workspaces")
-        workspace_name = os.getenv("CAI_WORKSPACE", "cai_default")
+        workspace_name = os.getenv("CAI_WORKSPACE", None)
         
         # Basic validation for workspace name
         if not all(c.isalnum() or c in ['_', '-'] for c in workspace_name):
-            workspace_name = "cai_default"
+            workspace_name = None
             
         return os.path.join(base_dir, workspace_name)
         
@@ -2135,7 +2137,7 @@ class WorkspaceCommand(Command):
         
         if env_type == "container":
             # Get current workspace name
-            workspace_name = os.getenv("CAI_WORKSPACE", "cai_default")
+            workspace_name = os.getenv("CAI_WORKSPACE", None)
             
             # Use the workspace path inside the container
             container_workspace_path = f"/workspace/workspaces/{workspace_name}"
@@ -2203,7 +2205,7 @@ class WorkspaceCommand(Command):
         Returns:
             True if the subcommand was handled successfully, False otherwise
         """
-        workspace_name = os.getenv("CAI_WORKSPACE", "cai_default")
+        workspace_name = os.getenv("CAI_WORKSPACE", None)
         workspace_dir = self._get_workspace_dir()
         active_container = os.getenv("CAI_ACTIVE_CONTAINER", "")
         
@@ -2279,7 +2281,7 @@ class WorkspaceCommand(Command):
             return False
             
         command = " ".join(args)
-        workspace_name = os.getenv("CAI_WORKSPACE", "cai_default")
+        workspace_name = os.getenv("CAI_WORKSPACE", None)
         workspace_dir = self._get_workspace_dir()
         active_container = os.getenv("CAI_ACTIVE_CONTAINER", "")
         
@@ -2440,6 +2442,124 @@ class WorkspaceCommand(Command):
             console.print("  /workspace copy file.txt container:file.txt  # Host to container")
             console.print("  /workspace copy container:file.txt file.txt  # Container to host")
             return False
+
+    def handle_delete_subcommand(self, args: Optional[List[str]] = None) -> bool:
+        """Handle the delete subcommand to remove the current workspace.
+        
+        Args:
+            args: Optional list of subcommand arguments
+            
+        Returns:
+            True if the subcommand was handled successfully, False otherwise
+        """
+        workspace_name = os.getenv("CAI_WORKSPACE", None)
+        if not workspace_name:
+            console.print(
+                "[yellow]No workspace is currently set. "
+                "Nothing to delete.[/yellow]"
+            )
+            return False
+            
+        workspace_dir = self._get_workspace_dir()
+        active_container = os.getenv("CAI_ACTIVE_CONTAINER", "")
+        
+        # Confirm deletion
+        console.print(
+            f"[bold red]Warning: This will delete the workspace "
+            f"'{workspace_name}' and all its files.[/bold red]"
+        )
+        confirmation = input("Are you sure? (y/N): ").strip().lower()
+        
+        if confirmation != 'y':
+            console.print("[yellow]Deletion cancelled.[/yellow]")
+            return False
+            
+        # Delete files in container if active
+        if active_container:
+            container_workspace_path = f"/workspace/workspaces/{workspace_name}"
+            try:
+                # Check if the directory exists in the container
+                check_cmd = [
+                    "docker", "exec", active_container, 
+                    "test", "-d", container_workspace_path
+                ]
+                check_result = subprocess.run(
+                    check_cmd,
+                    capture_output=True,
+                    check=False
+                )
+                
+                if check_result.returncode == 0:
+                    # Delete the directory in the container
+                    rm_cmd = [
+                        "docker", "exec", active_container, 
+                        "rm", "-rf", container_workspace_path
+                    ]
+                    rm_result = subprocess.run(
+                        rm_cmd,
+                        capture_output=True,
+                        text=True,
+                        check=False
+                    )
+                    
+                    if rm_result.returncode == 0:
+                        console.print(
+                            f"[green]Deleted workspace directory in container: "
+                            f"{container_workspace_path}[/green]"
+                        )
+                    else:
+                        console.print(
+                            f"[yellow]Warning: Could not delete workspace "
+                            f"directory in container: "
+                            f"{rm_result.stderr}[/yellow]"
+                        )
+            except Exception as e:
+                console.print(
+                    f"[yellow]Warning: Failed to delete workspace in "
+                    f"container: {str(e)}[/yellow]"
+                )
+                
+        # Delete files on host
+        try:
+            if os.path.exists(workspace_dir):
+                shutil.rmtree(workspace_dir)
+                console.print(
+                    f"[green]Deleted workspace directory on host: "
+                    f"{workspace_dir}[/green]"
+                )
+            else:
+                console.print(
+                    f"[yellow]Workspace directory does not exist on host: "
+                    f"{workspace_dir}[/yellow]"
+                )
+        except Exception as e:
+            console.print(
+                f"[red]Error deleting workspace on host: {str(e)}[/red]"
+            )
+            return False
+            
+        # Reset environment variable
+        try:
+            from cai.repl.commands.config import set_env_var
+            if not set_env_var("CAI_WORKSPACE", ""):
+                console.print(
+                    "[yellow]Failed to reset workspace environment "
+                    "variable.[/yellow]"
+                )
+        except ImportError:
+            # Fallback
+            os.environ["CAI_WORKSPACE"] = ""
+            
+        console.print(
+            Panel(
+                f"Workspace [bold red]{workspace_name}[/bold red] has been "
+                f"deleted.\nDefault workspace is now active.",
+                title="Workspace Deleted",
+                border_style="red"
+            )
+        )
+        
+        return True
 
 
 # Register the commands
