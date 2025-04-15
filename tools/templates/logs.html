@@ -36,11 +36,33 @@
             display: block;
             margin: 0 auto;
         }
+        .nav-links {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav-links a:hover {
+            background-color: #3e8e41;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Log Analysis Dashboard</h1>
+        
+        <div class="nav-links">
+            <a href="/">Log Analysis Dashboard</a>
+            <a href="/pypi-stats">PyPI Statistics</a>
+        </div>
         
         <div class="plot-container">
             <h2>Logs by Day</h2>
@@ -56,6 +78,13 @@
             <h2>Most Active Users</h2>
             <img src="{{ active_users }}" alt="Most Active Users">
         </div>
+        
+        {% if pypi_plot %}
+        <div class="plot-container">
+            <h2>PyPI Download Statistics</h2>
+            <img src="{{ pypi_plot }}" alt="PyPI Download Statistics">
+        </div>
+        {% endif %}
     </div>
 </body>
 </html> 
