@@ -57,6 +57,7 @@ from cai.util import (
     flatten_gemini_fields,
     get_template_content,
     load_prompt_template,
+    cli_print_reasoning_traces
 )
 from cai.util import start_active_time, start_idle_time
 from cai.internal.components.metrics import process_intermediate_metrics
@@ -322,6 +323,7 @@ class CAI:  # pylint: disable=too-many-instance-attributes
         if (any(x in agent.model for x in ["claude", "thinking"]) and 
             all(x in agent.model for x in ["claude", "thinking"])):
             create_params["max_tokens"] = 64000
+            create_params["model"] = agent.model.replace("-thinking", "")
             create_params["thinking"] = {"type": "enabled", "budget_tokens": 16000}
             create_params["temperature"] = 1
 
@@ -569,7 +571,6 @@ class CAI:  # pylint: disable=too-many-instance-attributes
                     litellm_completion.cost = 0.0
                 else:
                     print(e)
-
             return litellm_completion
         except litellm.Timeout as e:
             print(f"\033[31mRequest timed out: {str(e)}\033[0m")
@@ -967,6 +968,32 @@ class CAI:  # pylint: disable=too-many-instance-attributes
 
         if active_agent.name == "Reasoner Agent":
             self.last_reasoning_content = message.content
+            
+        # Handle reasoning content if available
+        if hasattr(message, 'reasoning_content') and message.reasoning_content:
+                cli_print_reasoning_traces(
+                    active_agent.name,
+                    [message.reasoning_content],
+                    n_turn,
+                    active_agent.model,
+                    debug
+                )
+
+        elif (hasattr(message, 'provider_specific_fields') and 
+                  message.provider_specific_fields and 
+                  'thinking_blocks' in message.provider_specific_fields and 
+                  message.provider_specific_fields['thinking_blocks']):
+                thinking_blocks = message.provider_specific_fields['thinking_blocks']
+                thinking_content = [block['thinking'] for block in thinking_blocks 
+                                   if block['type'] == 'thinking']
+                if thinking_content:
+                    cli_print_reasoning_traces(
+                        active_agent.name,
+                        thinking_content,
+                        n_turn,
+                        active_agent.model,
+                        debug,
+                    )
 
         debug_print(
             debug,

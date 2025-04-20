@@ -417,6 +417,92 @@ def get_ollama_api_base() -> str:
     return os.getenv("OLLAMA_API_BASE", "http://host.docker.internal:8000/v1")
 
 
+def cli_print_reasoning_traces(
+    agent_name,
+    reasoning_traces,
+    n_turn,
+    model=None,
+    debug=None,
+    interaction_input_tokens=None,
+    interaction_output_tokens=None,
+    interaction_reasoning_tokens=None,
+    total_input_tokens=None,
+    total_output_tokens=None,
+    total_reasoning_tokens=None,
+    interaction_cost=None,
+    total_cost=None
+):
+    """Print reasoning traces with enhanced visual formatting.
+    
+    Args:
+        agent_name: Name of the agent
+        reasoning_traces: The reasoning traces to display
+        n_turn: Turn number
+        model: The model used for reasoning
+        debug: Debug level
+        interaction_input_tokens: Number of input tokens in current interaction
+        interaction_output_tokens: Number of output tokens in current interaction
+        interaction_reasoning_tokens: Number of reasoning tokens in current interaction
+        total_input_tokens: Total number of input tokens used
+        total_output_tokens: Total number of output tokens used
+        total_reasoning_tokens: Total number of reasoning tokens used
+        interaction_cost: Cost of the current interaction
+        total_cost: Total cost of all interactions
+    """
+    if not reasoning_traces or not debug or debug != 2:
+        return
+        
+    timestamp = datetime.now().strftime("%H:%M:%S")
+    
+    # Create header for reasoning traces
+    text = Text()
+    text.append(f"[{n_turn}] ", style="bold red")
+    text.append(f"Agent: {agent_name} ", style="bold yellow")
+    text.append(f"[{timestamp}", style="dim")
+    if model:
+        text.append(f" ({model})", style="bold magenta")
+    text.append("]", style="dim")
+    
+    # Add token information with enhanced formatting
+    tokens_text = None
+    if (interaction_input_tokens is not None and
+            interaction_output_tokens is not None and
+            interaction_reasoning_tokens is not None and
+            total_input_tokens is not None and
+            total_output_tokens is not None and
+            total_reasoning_tokens is not None):
+            
+        tokens_text = _create_token_display(
+            interaction_input_tokens,
+            interaction_output_tokens,
+            interaction_reasoning_tokens,
+            total_input_tokens,
+            total_output_tokens,
+            total_reasoning_tokens,
+            model,
+            interaction_cost,
+            total_cost
+        )
+        text.append(tokens_text)
+    
+    # Format the reasoning content directly without showing steps
+    trace_content = Text()
+    for i, trace in enumerate(reasoning_traces):
+        if i > 0:
+            trace_content.append("\n\n")
+        trace_content.append(trace, style="green")
+    
+    # Create a panel for better visual separation
+    panel = Panel(
+        Group(text, trace_content),
+        border_style="red",
+        box=ROUNDED,
+        padding=(0, 1),
+        title="[bold]Reasoning[/bold]",
+        title_align="left"
+    )
+    console.print(panel)
+
 def cli_print_agent_messages(agent_name, message, counter, model, debug,  # pylint: disable=too-many-arguments,too-many-locals,unused-argument # noqa: E501
                              interaction_input_tokens=None,
                              interaction_output_tokens=None,
@@ -1007,6 +1093,244 @@ def cli_print_tool_call(tool_name, tool_args,  # pylint: disable=R0914,too-many-
                 group_content.extend([
                     code_panel,
                     output_panel,
+                    tokens_text if tokens_text else Text("")
+                ])
+            except Exception:  # pylint: disable=broad-exception-caught # noqa: E722,E501
+                group_content.extend([
+                    Text(output, style="yellow"),
+                    tokens_text if tokens_text else Text("")
+                ])
+        # Special handling for Claude tools
+        elif tool_name in ["view", "str_replace", "create", "insert", "undo_edit"]:
+            try:
+                from rich.syntax import Syntax  # pylint: disable=import-outside-toplevel,import-error # noqa: E402,E501
+                
+                # Handle different Claude tools with custom panels
+                if tool_name == "view":
+                    path = filtered_args.get("path", "")
+                    view_range = filtered_args.get("view_range", None)
+                    
+                    # Create file info panel
+                    file_info = Text()
+                    file_info.append(f"Path: {path}\n", style="bold green")
+                    if view_range:
+                        file_info.append(f"Range: Lines {view_range[0]} to {view_range[1]}", 
+                                        style="bold blue")
+                    
+                    info_panel = Panel(
+                        file_info,
+                        title="File Info",
+                        border_style="green",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    # Try to detect language from file extension
+                    language = "text"
+                    if "." in path:
+                        ext = path.split(".")[-1].lower()
+                        if ext in ["py", "js", "java", "c", "cpp", "cs", "go", "rs", 
+                                  "php", "rb", "sh", "html", "css", "json", "md", "xml"]:
+                            language = ext
+                    
+                    # Create syntax highlighted content panel
+                    syntax = Syntax(output, language, theme="monokai", line_numbers=True,
+                                   background_color="#272822", indent_guides=True)
+                    
+                    content_panel = Panel(
+                        syntax,
+                        title="File Content",
+                        border_style="cyan",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    group_content.extend([
+                        info_panel,
+                        content_panel,
+                        tokens_text if tokens_text else Text("")
+                    ])
+                    
+                elif tool_name == "str_replace":
+                    path = filtered_args.get("path", "")
+                    old_str = filtered_args.get("old_str", "")
+                    new_str = filtered_args.get("new_str", "")
+                    
+                    # Create replacement info panel
+                    replace_info = Text()
+                    replace_info.append(f"File: {path}\n\n", style="bold green")
+                    replace_info.append("Replaced:\n", style="bold red")
+                    replace_info.append(f"{old_str}\n\n", style="red")
+                    replace_info.append("With:\n", style="bold green")
+                    replace_info.append(f"{new_str}", style="green")
+                    
+                    info_panel = Panel(
+                        replace_info,
+                        title="Replacement Info",
+                        border_style="yellow",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    # Create result panel
+                    result_panel = Panel(
+                        Text(output, style="yellow"),
+                        title="Result",
+                        border_style="blue",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    group_content.extend([
+                        info_panel,
+                        result_panel,
+                        tokens_text if tokens_text else Text("")
+                    ])
+                    
+                elif tool_name == "create":
+                    path = filtered_args.get("path", "")
+                    file_text = filtered_args.get("file_text", "")
+                    
+                    # Try to detect language from file extension
+                    language = "text"
+                    if "." in path:
+                        ext = path.split(".")[-1].lower()
+                        if ext in ["py", "js", "java", "c", "cpp", "cs", "go", "rs", 
+                                  "php", "rb", "sh", "html", "css", "json", "md", "xml"]:
+                            language = ext
+                    
+                    # Create file info panel
+                    file_info = Text()
+                    file_info.append(f"Created file: {path}", style="bold green")
+                    
+                    info_panel = Panel(
+                        file_info,
+                        title="File Creation",
+                        border_style="green",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    # Create syntax highlighted content panel
+                    syntax = Syntax(file_text, language, theme="monokai", line_numbers=True,
+                                   background_color="#272822", indent_guides=True)
+                    
+                    content_panel = Panel(
+                        syntax,
+                        title="File Content",
+                        border_style="cyan",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    # Create result panel
+                    result_panel = Panel(
+                        Text(output, style="yellow"),
+                        title="Result",
+                        border_style="blue",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    group_content.extend([
+                        info_panel,
+                        content_panel,
+                        result_panel,
+                        tokens_text if tokens_text else Text("")
+                    ])
+                    
+                elif tool_name == "insert":
+                    path = filtered_args.get("path", "")
+                    insert_line = filtered_args.get("insert_line", 0)
+                    new_str = filtered_args.get("new_str", "")
+                    
+                    # Create insertion info panel
+                    insert_info = Text()
+                    insert_info.append(f"File: {path}\n", style="bold green")
+                    insert_info.append(f"Inserted at line: {insert_line}\n\n", style="bold blue")
+                    insert_info.append("Content inserted:\n", style="bold cyan")
+                    insert_info.append(f"{new_str}", style="cyan")
+                    
+                    info_panel = Panel(
+                        insert_info,
+                        title="Insertion Info",
+                        border_style="green",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    # Create result panel
+                    result_panel = Panel(
+                        Text(output, style="yellow"),
+                        title="Result",
+                        border_style="blue",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    group_content.extend([
+                        info_panel,
+                        result_panel,
+                        tokens_text if tokens_text else Text("")
+                    ])
+                    
+                elif tool_name == "undo_edit":
+                    path = filtered_args.get("path", "")
+                    
+                    # Create undo info panel
+                    undo_info = Text()
+                    undo_info.append(f"Undoing last edit to: {path}", style="bold yellow")
+                    
+                    info_panel = Panel(
+                        undo_info,
+                        title="Undo Operation",
+                        border_style="yellow",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    # Create result panel
+                    result_panel = Panel(
+                        Text(output, style="yellow"),
+                        title="Result",
+                        border_style="blue",
+                        title_align="left",
+                        box=ROUNDED,
+                        padding=(1, 2)
+                    )
+                    
+                    group_content.extend([
+                        info_panel,
+                        result_panel,
+                        tokens_text if tokens_text else Text("")
+                    ])
+                
+                # Simplify display for long titles
+                if title_width > max_title_width:
+                    simplified_text = Text()
+                    simplified_text.append(f"{tool_name}(", style="bold cyan")
+                    simplified_text.append("...", style="yellow")
+                    simplified_text.append(")", style="bold cyan")
+                    simplified_text.append(
+                        f" [Total: {total_elapsed} | Tool: {tool_elapsed}]",
+                        style="bold magenta")
+                    
+                    group_content[0] = simplified_text
+                
+            except Exception:  # pylint: disable=broad-exception-caught # noqa: E722,E501
+                # Fallback if syntax highlighting fails
+                group_content.extend([
+                    Text(output, style="yellow"),
                     tokens_text if tokens_text else Text("")
                 ])
             except Exception:  # pylint: disable=broad-exception-caught # noqa: E722,E501

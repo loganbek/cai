@@ -8,21 +8,23 @@ from typing import Optional
 
 # Local imports
 from cai.tools.common import run_command, _get_workspace_dir, _get_container_workspace_path  # pylint: disable=import-error
-
 def execute_code(code: str = "", language: str = "python",
                 filename: str = "exploit", timeout: int = 100, ctf=None) -> str:
     """
-    Create a file code store it and execute it
+    Create a file with code, store it and execute it, or execute an existing file.
 
     This tool allows for executing code provided in different
     programming languages. It creates a permanent file with the provided code
     and executes it using the appropriate interpreter. You can exec this
     code as many times as you want using `generic_linux_command` tool.
 
+    If only a filename is provided (without code), the tool will execute
+    the existing file with that name.
+
     Priorize: Python and Perl
 
     Args:
-        code: The code snippet to execute
+        code: The code snippet to execute. If empty, will execute an existing file.
         language: Programming language to use (default: python)
         filename: Base name for the file without extension (default: exploit)
         timeout: Timeout for the execution (default: 100 seconds)
@@ -31,9 +33,6 @@ def execute_code(code: str = "", language: str = "python",
     Returns:
         Command output or error message from execution
     """
-
-    if not code:
-        return "No code provided to execute"
 
     # Map file extensions
     extensions = {
@@ -65,21 +64,28 @@ def execute_code(code: str = "", language: str = "python",
         # Running on the host system
         workspace_path = _get_workspace_dir()
 
-    # Create code file
-    # Ensure the workspace directory exists before writing the file
-    # The run_command function handles directory creation based on its context
     # Construct the full path for the code file
     code_file_path = os.path.join(workspace_path, full_filename)
 
-    # Escape single quotes in the code to avoid issues with cat << 'EOF'
-    escaped_code = code.replace("'", "'\\''")
-    create_cmd = f"mkdir -p '{workspace_path}' && echo '{escaped_code}' > '{code_file_path}'"
-    # Use echo instead of cat heredoc for better handling of special chars/newlines
-    # create_cmd = f"mkdir -p '{workspace_path}' && cat << 'EOF' > '{code_file_path}'\\n{code}\\nEOF"
-
-    result = run_command(create_cmd, ctf=ctf)
-    if "error" in result.lower() or "failed" in result.lower(): # Check for common failure indicators
-        return f"Failed to create code file '{code_file_path}': {result}"
+    # If code is provided, create a new file
+    if code:
+        try:
+            # Create directory if it doesn't exist
+            os.makedirs(workspace_path, exist_ok=True)
+            
+            # Write code directly to file using Python's file operations
+            # This avoids shell escaping issues
+            with open(code_file_path, 'w', encoding='utf-8') as f:
+                f.write(code)
+                
+            result = "File created successfully"
+        except Exception as e:
+            return f"Failed to create code file '{code_file_path}': {str(e)}"
+    else:
+        # If no code is provided, check if the file exists
+        file_exists = run_command(f"[ -f '{code_file_path}' ] && echo 'exists' || echo 'not found'", ctf=ctf).strip()
+        if file_exists != "exists":
+            return f"No code provided and file '{code_file_path}' does not exist."
 
     # Determine command to execute based on language, using workspace_path
     if language.lower() == "python":

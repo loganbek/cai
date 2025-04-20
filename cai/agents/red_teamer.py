@@ -9,6 +9,12 @@ from cai.tools.command_and_control.sshpass import (  # pylint: disable=import-er
 from cai.tools.reconnaissance.generic_linux_command import (  # pylint: disable=import-error # noqa: E501
     generic_linux_command
 )
+from cai.tools.misc.claude_tools import (  # pylint: disable=import-error # noqa: E501
+    str_replace,
+    create,
+    insert,
+    undo_edit
+)
 from cai.tools.web.search_web import (  # pylint: disable=import-error # noqa: E501
     make_web_search_with_explanation,
 )
@@ -23,7 +29,11 @@ redteam_agent_system_prompt = load_prompt_template("prompts/system_red_team_agen
 functions = [
     generic_linux_command,
     run_ssh_command_with_credentials,
-    execute_code,
+    str_replace,
+    create,
+    insert,
+    undo_edit,
+    execute_code
 ]
 
 # Add make_web_search_with_explanation function if PERPLEXITY_API_KEY environment variable is set
