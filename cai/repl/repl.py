@@ -136,7 +136,7 @@ def display_quick_guide():
     
     # Create additional tips panels
     ollama_tip = Panel(
-        "To use Ollama models, configure OLLAMA_API_BASE\n"
+        "To use Ollama models, configure OPENAI_BASE_URL\n"
         "before startup.\n\n"
         "Default: host.docker.internal:8000/v1",
         title="[bold yellow]Ollama Configuration[/bold yellow]",

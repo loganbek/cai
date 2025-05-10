@@ -52,7 +52,7 @@ from cai.util import (
     debug_print,
     fix_message_list,
     function_to_json,
-    get_ollama_api_base,
+    get_OPENAI_BASE_URL,
     initialize_global_timer,
     flatten_gemini_fields,
     get_template_content,
@@ -362,7 +362,7 @@ class CAI:  # pylint: disable=too-many-instance-attributes
                     if os.getenv("OLLAMA", "").lower() == "true":
                         litellm_completion = litellm.completion(
                             **create_params,
-                            api_base=get_ollama_api_base(),
+                            api_base=get_OPENAI_BASE_URL(),
                             custom_llm_provider="openai"
                         )
                     else:
@@ -418,7 +418,7 @@ class CAI:  # pylint: disable=too-many-instance-attributes
                         # Create a copy of params to avoid overwriting the original
                         # ones
                         ollama_params = create_params.copy()
-                        ollama_params["api_base"] = get_ollama_api_base()
+                        ollama_params["api_base"] = get_OPENAI_BASE_URL()
                         ollama_params["custom_llm_provider"] = "openai"
                         try:
                             litellm_completion = litellm.completion(**ollama_params)
@@ -499,7 +499,7 @@ class CAI:  # pylint: disable=too-many-instance-attributes
                     print("If you are using private models, there is a error. "
                           "callback to ollama")
                     ollama_params = create_params.copy()
-                    ollama_params["api_base"] = get_ollama_api_base()
+                    ollama_params["api_base"] = get_OPENAI_BASE_URL()
                     ollama_params["custom_llm_provider"] = "openai"
                     create_params["timeout"] = 60
                     try:

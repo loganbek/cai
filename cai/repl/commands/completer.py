@@ -27,7 +27,7 @@ from prompt_toolkit.formatted_text import HTML  # pylint: disable=import-error
 from prompt_toolkit.styles import Style  # pylint: disable=import-error
 from rich.console import Console  # pylint: disable=import-error
 
-from cai.core import get_ollama_api_base
+from cai.core import get_OPENAI_BASE_URL
 from cai.repl.commands.base import (
     COMMANDS,
     COMMAND_ALIASES
@@ -109,7 +109,7 @@ class FuzzyCommandCompleter(Completer):
 
             try:
                 # Get Ollama models with a short timeout to prevent hanging
-                api_base = get_ollama_api_base()
+                api_base = get_OPENAI_BASE_URL()
                 response = requests.get(
                     f"{api_base.replace('/v1', '')}/api/tags", timeout=0.5)
 

@@ -47,12 +47,12 @@ def get_supported_models_count():
 
             # Try to get Ollama models count
             try:
-                ollama_api_base = os.getenv(
-                    "OLLAMA_API_BASE",
+                OPENAI_BASE_URL = os.getenv(
+                    "OPENAI_BASE_URL",
                     "http://host.docker.internal:8000/v1"
                 )
                 ollama_response = requests.get(
-                    f"{ollama_api_base.replace('/v1', '')}/api/tags",
+                    f"{OPENAI_BASE_URL.replace('/v1', '')}/api/tags",
                     timeout=1
                 )
 

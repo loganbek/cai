@@ -769,7 +769,7 @@ Ollama's API in OpenAI mode uses `/v1/chat/completions` whereas the `openai` lib
 We adopt the latter for overall alignment with the gen AI community and empower the former by allowing users to add the `v1` themselves via:
 
 ```bash
-OLLAMA_API_BASE=http://IP:PORT/v1
+OPENAI_BASE_URL=http://IP:PORT/v1
 ```
 
 See the following issues that treat this topic in more detail:

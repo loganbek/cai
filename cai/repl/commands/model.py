@@ -12,7 +12,7 @@ import requests  # pylint: disable=import-error
 from rich.console import Console  # pylint: disable=import-error
 from rich.table import Table  # pylint: disable=import-error
 from rich.panel import Panel  # pylint: disable=import-error
-from cai.core import get_ollama_api_base
+from cai.core import get_OPENAI_BASE_URL
 from cai.repl.commands.base import Command, register_command
 
 console = Console()
@@ -274,7 +274,7 @@ class ModelCommand(Command):
             # pylint: disable=too-many-nested-blocks
             try:
                 # Get Ollama models with a short timeout to prevent hanging
-                api_base = get_ollama_api_base()
+                api_base = get_OPENAI_BASE_URL()
                 ollama_base = api_base.replace('/v1', '')
                 response = requests.get(
                     f"{ollama_base}/api/tags",
@@ -318,7 +318,7 @@ class ModelCommand(Command):
                             "Local",
                             "Free",
                             "Free",
-                            "OLLAMA_API_BASE",
+                            "OPENAI_BASE_URL",
                             model_description
                         )
 
@@ -335,7 +335,7 @@ class ModelCommand(Command):
                     "Local",
                     "Free",
                     "Free",
-                    "OLLAMA_API_BASE",
+                    "OPENAI_BASE_URL",
                     "Local Llama 3 model (if installed)")
                 model_table.add_row(str(start_index + 1),
                                     "mistral",
@@ -343,7 +343,7 @@ class ModelCommand(Command):
                                     "Local",
                                     "Free",
                                     "Free",
-                                    "OLLAMA_API_BASE",
+                                    "OPENAI_BASE_URL",
                                     "Local Mistral model (if installed)")
                 model_table.add_row(str(start_index + 2),
                                     "...",
@@ -351,7 +351,7 @@ class ModelCommand(Command):
                                     "Local",
                                     "Free",
                                     "Free",
-                                    "OLLAMA_API_BASE",
+                                    "OPENAI_BASE_URL",
                                     "Other local models (if installed)")
 
             console.print(model_table)
@@ -620,7 +620,7 @@ class ModelShowCommand(Command):
                 elif "bedrock" in provider_lower:  # Catch-all for other Bedrock # noqa: E501
                     api_key_var = "AWS Keys (Configured)"
                 elif "ollama" in provider_lower:
-                    api_key_var = "OLLAMA_API_BASE"
+                    api_key_var = "OPENAI_BASE_URL"
                 elif provider != "Unknown" and provider != "Ollama":  # Many other providers exist # noqa: E501
                     api_key_var = f"{
                         provider.upper().replace(
@@ -689,7 +689,7 @@ class ModelShowCommand(Command):
             # Now add Ollama models if available
             try:
                 # Get Ollama models with a short timeout
-                api_base = get_ollama_api_base()
+                api_base = get_OPENAI_BASE_URL()
                 api_tags = f"{api_base.replace('/v1', '')}/api/tags"
                 ollama_response = requests.get(api_tags, timeout=1)
 
@@ -743,7 +743,7 @@ class ModelShowCommand(Command):
                             "Varies",
                             "Free",
                             "Free",
-                            "OLLAMA_API_BASE",
+                            "OPENAI_BASE_URL",
                             model_description
                         )
 

@@ -410,11 +410,11 @@ def format_chat_completion(msg, prev_msg=None) -> str:  # pylint: disable=unused
         COLORS['reset']}(\n    " + '\n    '.join(colored_lines) + "\n  )"
 
 
-def get_ollama_api_base() -> str:
+def get_OPENAI_BASE_URL() -> str:
     """
     Get the Ollama API base URL from the environment variable.
     """
-    return os.getenv("OLLAMA_API_BASE", "http://host.docker.internal:8000/v1")
+    return os.getenv("OPENAI_BASE_URL", "http://host.docker.internal:8000/v1")
 
 
 def cli_print_agent_messages(agent_name, message, counter, model, debug,  # pylint: disable=too-many-arguments,too-many-locals,unused-argument # noqa: E501
