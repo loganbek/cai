@@ -277,7 +277,7 @@ class CAI:  # pylint: disable=too-many-instance-attributes
             "model": model_override or agent.model,
             "messages": messages,
             "stream": stream,
-            "api_base": self.openai_base_url,  # Use custom base URL
+            #"api_base": self.openai_base_url,  # Use custom base URL
         }
         if tools:
             create_params["tools"] = tools
