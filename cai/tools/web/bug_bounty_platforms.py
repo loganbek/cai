@@ -302,7 +302,7 @@ def bugcrowd_create_submission(
                 "title": title,
                 "vulnerability_type": vulnerability_type,
                 "description": description,
-                "severity": int(severity),
+                "severity": int(severity) if severity.isdigit() else ValueError("Severity must be a valid integer."),
                 "steps_to_reproduce": steps,
                 "impact": impact
             }

@@ -1,0 +1,94 @@
+{
+  "version": "1.0",
+  "workspaceConfiguration": {
+    "modules": [
+      {
+        "name": "Core Framework",
+        "description": "Core functionality of the CAI framework",
+        "paths": ["cai/core.py", "cai/types.py", "cai/util.py", "cai/graph.py"]
+      },
+      {
+        "name": "Agents",
+        "description": "Various agent types for cybersecurity tasks",
+        "paths": ["cai/agents/**/*.py"]
+      },
+      {
+        "name": "Tools",
+        "description": "Security tools organized by kill chain categories",
+        "paths": [
+          "cai/tools/reconnaissance/**/*.py",
+          "cai/tools/exploitation/**/*.py",
+          "cai/tools/lateral_movement/**/*.py",
+          "cai/tools/privilege_scalation/**/*.py",
+          "cai/tools/command_and_control/**/*.py",
+          "cai/tools/data_exfiltration/**/*.py",
+          "cai/tools/web/**/*.py",
+          "cai/tools/misc/**/*.py"
+        ],
+        "interfaces": ["cai/tools/common.py"]
+      },
+      {
+        "name": "Bug Bounty Tools",
+        "description": "Bug bounty specific functionality and platform integration",
+        "paths": [
+          "cai/agents/bug_bounter.py",
+          "cai/tools/web/bug_bounty_platforms.py",
+          "cai/prompts/system_bug_bounter.md"
+        ],
+        "examples": [
+          "examples/cybersecurity/bug_bounty_run.py",
+          "examples/cybersecurity/bug_bounty_platforms_example.py",
+          "examples/cybersecurity/bug_bounty_workflow.py"
+        ]
+      },
+      {
+        "name": "CLI and REPL",
+        "description": "Command-line interface and interactive shell",
+        "paths": ["cai/cli.py", "cai/repl/**/*.py"]
+      },
+      {
+        "name": "Memory and State",
+        "description": "State tracking and memory management for agents",
+        "paths": ["cai/state/**/*.py", "cai/rag/**/*.py"]
+      }
+    ],
+    "dependencies": [
+      {
+        "name": "litellm",
+        "version": "latest",
+        "description": "Unified interface to various LLM providers",
+        "packageManager": "pip"
+      },
+      {
+        "name": "phoenix",
+        "version": "latest",
+        "description": "Tracing and logging for LLM operations",
+        "packageManager": "pip" 
+      }
+    ],
+    "contextFiles": [
+      {
+        "path": ".github/copilot/instructions.md",
+        "description": "Repository-wide instructions for Copilot"
+      }
+    ]
+  },
+  "projectConstraints": {
+    "pythonVersion": "3.12",
+    "environmentVariables": [
+      "OPENAI_API_KEY",
+      "ANTHROPIC_API_KEY",
+      "HACKERONE_API_TOKEN",
+      "HACKERONE_USERNAME",
+      "BUGCROWD_API_TOKEN",
+      "SHODAN_API_KEY"
+    ],
+    "platforms": ["Linux", "Windows", "macOS", "Android"]
+  },
+  "ethicalGuidelines": {
+    "responsibleUse": true,
+    "securityBestPractices": true,
+    "testingConstraints": "Only test on systems with explicit permission",
+    "documentation": "Document all capabilities and limitations of security tools"
+  }
+}

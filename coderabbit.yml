@@ -1,0 +1,99 @@
+# CodeRabbit Configuration
+
+# Basic setup
+version: 1
+skipPaths:
+  - "**/*.md"
+  - "media/**"
+  - "docs/**"
+  - "LICENSE*"
+  - "DISCLAIMER"
+  - "*.sh"
+
+# Smart PR/MR title configuration
+smartPrTitle:
+  enable: true
+
+# Code review settings
+review:
+  request_changes_workflow: false
+  path_filters:
+    - "cai/**/*.py"
+    - "tests/**/*.py"
+    - "tools/**/*.py"
+    - "examples/**/*.py"
+  line_comments: true
+  auto_review:
+    enabled: true
+    ignore_title_patterns:
+      - "WIP"
+      - "DO NOT REVIEW"
+    draft: true
+  
+  # Review checklist for CAI files
+  checklist:
+    - "Does this change maintain backward compatibility?"
+    - "Are there adequate tests for the new/changed functionality?"
+    - "Is there appropriate error handling?"
+    - "Has documentation been updated?"
+    - "Are the code style guidelines followed?"
+    - "For security tools, have ethical considerations been addressed?"
+
+  # Review suggestions for different types of files
+  suggestions:
+    python:
+      security:
+        enabled: true
+      style:
+        enabled: true
+      practices:
+        enabled: true
+      bugs:
+        enabled: true
+    cybersecurity_tools:
+      security:
+        enabled: true
+      ethics:
+        enabled: true
+      effectiveness:
+        enabled: true
+      documentation:
+        enabled: true
+
+# Custom review patterns for bug bounty and security tools
+labels:
+  "security sensitive":
+    - "cai/tools/exploitation/**"
+    - "cai/tools/web/webshell_suit.py"
+    - "cai/tools/web/bug_bounty_platforms.py"
+  "bug bounty":
+    - "cai/agents/bug_bounter.py"
+    - "cai/tools/web/bug_bounty_platforms.py"
+    - "examples/cybersecurity/bug_bounty_*.py"
+  "test":
+    - "tests/**"
+  "documentation":
+    - "**/*.md"
+    - "docs/**"
+
+# Notification settings
+notifications:
+  slack:
+    enabled: false  # Set to true and configure if you're using Slack
+
+# AI model settings for code review
+aiSettings:
+  model: "gpt-4o"  # Using GPT-4o for code analysis
+  temperature: 0.1  # Lower temperature for more deterministic reviews
+  systemPrompt: |
+    You are a code review assistant for the CAI (Cybersecurity AI) framework.
+    CAI is a lightweight, ergonomic framework for building bug bounty-ready Cybersecurity AIs.
+    
+    When reviewing code:
+    1. Focus on security implications, especially for cybersecurity tools
+    2. Check for ethical use of functions, especially those related to exploitation
+    3. Ensure proper error handling for API interactions
+    4. Verify that all cybersecurity tools follow responsible disclosure practices
+    5. Look for potential performance issues
+    6. Suggest cleaner, more maintainable code structures
+    7. Pay special attention to proper API key handling and authentication
