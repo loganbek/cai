@@ -20,7 +20,11 @@ if not os.getenv("GEMINI_API_KEY"):
     exit(1)
 
 def run_gemini_example():
-    """Run a simple example with the Gemini model."""
+    """
+    Runs a cybersecurity example using a Gemini model-powered bug bounty agent with the CAI framework.
+    
+    The function initializes a bug bounty agent configured with the Gemini model, sends a user query about website reconnaissance techniques, and prints the model's response.
+    """
     print("Initializing CAI with Gemini model...")
     
     # Create a bug bounty agent with Gemini model

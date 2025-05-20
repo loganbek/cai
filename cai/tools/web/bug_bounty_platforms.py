@@ -11,14 +11,13 @@ from typing import Dict, List, Optional, Union, Any
 
 def hackerone_get_programs(filter_type: str = "active", ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Fetch programs from HackerOne API.
+    Retrieves a list of HackerOne programs filtered by type.
     
     Args:
-        filter_type: Type of programs to fetch ("active", "eligible", "enrolled", etc)
-        ctf: CTF object to use for context
-        
+        filter_type: The type of programs to fetch (e.g., "active", "eligible", "enrolled").
+    
     Returns:
-        JSON string with program information
+        A JSON-formatted string containing program information, or an error message if credentials are missing or the request fails.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -52,14 +51,13 @@ def hackerone_get_programs(filter_type: str = "active", ctf=None) -> str:  # pyl
 
 def hackerone_get_program_details(program_handle: str, ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Fetch details of a specific HackerOne program including scope and policy.
+    Retrieves detailed information about a specific HackerOne program by its handle.
     
     Args:
-        program_handle: The handle/slug of the program
-        ctf: CTF object to use for context
-        
+        program_handle: The unique handle (slug) identifying the HackerOne program.
+    
     Returns:
-        JSON string with program details
+        A JSON-formatted string containing program details if successful, or an error message if credentials are missing or the request fails.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -98,21 +96,9 @@ def hackerone_create_report(
     ctf=None
 ) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Create a new vulnerability report on HackerOne.
+    Submits a new vulnerability report to a specified HackerOne program.
     
-    Args:
-        program_handle: The handle/slug of the program
-        title: Report title
-        vulnerability_type: Type of vulnerability
-        severity: Severity rating (none, low, medium, high, critical)
-        summary: Brief summary of the vulnerability
-        reproduction_steps: Detailed steps to reproduce
-        impact: Impact of the vulnerability
-        attachments: List of file paths to attach
-        ctf: CTF object to use for context
-        
-    Returns:
-        JSON string with report submission result
+    Creates a report with details such as title, vulnerability type, severity, summary, reproduction steps, and impact. Returns a JSON-formatted string with the result of the submission or an error message if credentials are missing or the request fails.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -158,14 +144,13 @@ def hackerone_create_report(
 
 def hackerone_get_report_status(report_id: str, ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Get the status of a submitted report on HackerOne.
+    Retrieves the status of a HackerOne report by its report ID.
     
     Args:
-        report_id: The ID of the report
-        ctf: CTF object to use for context
-        
+        report_id: The unique identifier of the HackerOne report.
+    
     Returns:
-        JSON string with report status
+        A JSON-formatted string containing the report status, or an error message if credentials are missing or the request fails.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -194,13 +179,10 @@ def hackerone_get_report_status(report_id: str, ctf=None) -> str:  # pylint: dis
 
 def bugcrowd_get_programs(ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Fetch programs from Bugcrowd API.
+    Retrieves a list of programs from the Bugcrowd API.
     
-    Args:
-        ctf: CTF object to use for context
-        
     Returns:
-        JSON string with program information
+        A JSON-formatted string containing program information, or an error message if the API token is missing or the request fails.
     """
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     
@@ -225,14 +207,13 @@ def bugcrowd_get_programs(ctf=None) -> str:  # pylint: disable=unused-argument  
 
 def bugcrowd_get_program_details(program_uuid: str, ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Fetch details of a specific Bugcrowd program including scope and targets.
+    Retrieves detailed information about a specific Bugcrowd program by its UUID.
     
     Args:
-        program_uuid: The UUID of the program
-        ctf: CTF object to use for context
-        
+        program_uuid: The unique identifier of the Bugcrowd program.
+    
     Returns:
-        JSON string with program details
+        A JSON-formatted string containing the program's details, or an error message if the request fails or the API token is missing.
     """
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     
@@ -267,21 +248,20 @@ def bugcrowd_create_submission(
     ctf=None
 ) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Create a new submission on Bugcrowd.
+    Creates a new vulnerability submission for a specified Bugcrowd program.
     
     Args:
-        program_uuid: The UUID of the program
-        title: Submission title
-        vulnerability_type: Type of vulnerability
-        description: Description of the vulnerability
-        severity: Severity rating (1-5, where 5 is critical)
-        steps: Steps to reproduce
-        impact: Impact of the vulnerability
-        attachments: List of file paths to attach
-        ctf: CTF object to use for context
+        program_uuid: The unique identifier of the Bugcrowd program.
+        title: The title of the vulnerability submission.
+        vulnerability_type: The type or category of the vulnerability.
+        description: Detailed description of the vulnerability.
+        severity: Severity rating as an integer string (1-5, where 5 is critical).
+        steps: Steps to reproduce the vulnerability.
+        impact: Description of the potential impact (optional).
+        attachments: List of file paths to attach (currently not processed).
         
     Returns:
-        JSON string with submission result
+        A JSON-formatted string with the result of the submission, or an error message if the API token is missing, the request fails, or the severity is invalid.
     """
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     
@@ -321,15 +301,14 @@ def bugcrowd_create_submission(
 
 def bugcrowd_get_submission_status(program_uuid: str, submission_uuid: str, ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Get the status of a submitted report on Bugcrowd.
+    Retrieves the status of a Bugcrowd submission by program and submission UUID.
     
     Args:
-        program_uuid: The UUID of the program
-        submission_uuid: The UUID of the submission
-        ctf: CTF object to use for context
-        
+        program_uuid: The unique identifier of the Bugcrowd program.
+        submission_uuid: The unique identifier of the submission.
+    
     Returns:
-        JSON string with submission status
+        A JSON-formatted string containing the submission status, or an error message if the request fails or credentials are missing.
     """
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     

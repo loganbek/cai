@@ -95,7 +95,11 @@ class FuzzyCommandCompleter(Completer):
             pass
 
     def fetch_ollama_models(self):  # pylint: disable=too-many-branches,too-many-statements,inconsistent-return-statements,line-too-long # noqa: E501
-        """Fetch available models from Ollama if it's running."""
+        """
+        Fetches and caches the list of available models from the Ollama API and standard model presets.
+        
+        If the Ollama API is available, retrieves the list of models from the running instance, otherwise falls back to a predefined set of standard models. Updates internal caches for model names and their corresponding numeric indices. Limits fetch frequency to once per 60 seconds to reduce API calls. Silently ignores errors if the Ollama API is unreachable.
+        """
         # Only fetch every 60 seconds to avoid excessive API calls
         now = datetime.datetime.now()
         
