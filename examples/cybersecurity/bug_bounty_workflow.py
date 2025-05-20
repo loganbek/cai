@@ -5,7 +5,6 @@ This script demonstrates a complete bug bounty workflow using CAI with
 HackerOne and Bugcrowd integration.
 """
 
-from cai.types import Agent
 from cai.core import CAI
 from cai.agents.bug_bounter import bug_bounter_agent
 
@@ -49,11 +48,14 @@ messages = [{
 
 # Run with debugging enabled
 print("Starting complete bug bounty workflow...")
-response = client.run(
-    agent=bug_bounter_agent,
-    messages=messages,
-    debug=1,
-    max_turns=20  # Allow more turns for the comprehensive workflow
-)
-
-print("\n\nWorkflow complete! Check the above output for results and report details.")
+try:
+    response = client.run(
+        agent=bug_bounter_agent,
+        messages=messages,
+        debug=1,
+        max_turns=20  # Allow more turns for the comprehensive workflow
+    )
+    print("\n\nWorkflow complete! Check the above output for results and report details.")
+except Exception as e:
+    print(f"\n\nWorkflow failed with error: {e}")
+    print("Check your environment variables and API credentials.")

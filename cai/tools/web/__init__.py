@@ -4,7 +4,6 @@ Web related tools for CAI
 
 from .search_web import search_web, make_google_search
 from .headers import check_headers
-from .webshell_suit import generate_php_webshell, curl_webshell, upload_webshell
 from .bug_bounty_platforms import (
     hackerone_get_programs,
     hackerone_get_program_details,
@@ -20,9 +19,6 @@ __all__ = [
     "search_web",
     "make_google_search",
     "check_headers",
-    "generate_php_webshell",
-    "curl_webshell",
-    "upload_webshell",
     "hackerone_get_programs",
     "hackerone_get_program_details",
     "hackerone_create_report",

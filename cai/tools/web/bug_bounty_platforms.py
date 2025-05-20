@@ -136,7 +136,8 @@ def hackerone_create_report(
                 "impact": impact,
                 "steps_to_reproduce": reproduction_steps,
                 "severity_rating": severity,
-                "weakness_id": vulnerability_type
+                "weakness_id": vulnerability_type,
+                "attachments": attachments if attachments else []
             }
         }
     }
@@ -294,7 +295,15 @@ def bugcrowd_create_submission(
         "Content-Type": "application/json",
         "Authorization": f"Token {api_token}"
     }
+      # Validate severity - must be a valid integer between 1 and 5
+    if not severity.isdigit():
+        return "Error: Severity must be a valid integer between 1 and 5."
     
+    severity_int = int(severity) if severity.isdigit() else 0
+     # Check if severity is within the valid range
+    if severity_int < 1 or severity_int > 5:
+        return "Error: Severity must be between 1 and 5, where 5 is critical."
+        
     data = {
         "data": {
             "type": "submission",
@@ -302,7 +311,7 @@ def bugcrowd_create_submission(
                 "title": title,
                 "vulnerability_type": vulnerability_type,
                 "description": description,
-                "severity": int(severity) if severity.isdigit() else ValueError("Severity must be a valid integer."),
+                "severity": severity_int,
                 "steps_to_reproduce": steps,
                 "impact": impact
             }

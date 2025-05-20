@@ -164,3 +164,6 @@ logs.txt
 
 # python env
 cai_env
+
+# Temporary files
+tmp/
