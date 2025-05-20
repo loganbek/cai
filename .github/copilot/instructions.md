@@ -60,7 +60,7 @@ CAI focuses on cybersecurity agent coordination and execution, built upon 7 pill
 
 - LiteLLM for model access
 - Phoenix for tracing and logging
-- Support for OpenAI, Anthropic, DeepSeek, and Ollama models
+- Support for OpenAI, Anthropic, Google Gemini, DeepSeek, and Ollama models
 
 ## Ethical Guidelines
 

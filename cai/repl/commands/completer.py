@@ -143,12 +143,13 @@ class FuzzyCommandCompleter(Completer):
                 # OpenAI O-series models
                 "o1",
                 "o1-mini",
-                "o3-mini",
-
-                # OpenAI GPT models
+                "o3-mini",                # OpenAI GPT models
                 "gpt-4o",
                 "gpt-4-turbo",
                 "gpt-3.5-turbo",
+
+                # Google Gemini models
+                "gemini/gemini-2.5-pro-exp-03-25",
 
                 # DeepSeek models
                 "deepseek/deepseek-chat",
