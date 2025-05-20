@@ -121,9 +121,9 @@ def hackerone_create_report(
         return "Error: Missing HackerOne API credentials. Set HACKERONE_API_TOKEN and HACKERONE_USERNAME environment variables."
     
     url = f"https://api.hackerone.com/v1/hackers/reports"
+    # Use multipart/form-data for file attachments
     headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
+        "Accept": "application/json"
     }
     
     data = {
@@ -137,18 +137,34 @@ def hackerone_create_report(
                 "steps_to_reproduce": reproduction_steps,
                 "severity_rating": severity,
                 "weakness_id": vulnerability_type,
-                "attachments": attachments if attachments else []
+                # attachments handled via multipart upload
+                "attachments": []
             }
         }
     }
     
     try:
-        response = requests.post(
-            url, 
-            auth=(api_username, api_token),
-            headers=headers,
-            json=data
-        )
+        if attachments:
+            # Prepare multipart form data: JSON 'data' field and file uploads
+            multipart_data = {"data": json.dumps(data)}
+            files_payload = []
+            for path in attachments:
+                files_payload.append(("attachments[]", open(path, "rb")))
+            response = requests.post(
+                url,
+                auth=(api_username, api_token),
+                headers=headers,
+                data=multipart_data,
+                files=files_payload
+            )
+        else:
+            # Standard JSON request when no files
+            response = requests.post(
+                url,
+                auth=(api_username, api_token),
+                headers={**headers, "Content-Type": "application/json"},
+                json=data
+            )
         
         if response.status_code in [200, 201]:
             return json.dumps(response.json(), indent=2)

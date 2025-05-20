@@ -114,7 +114,8 @@ A typical bug bounty workflow using these integrations might look like:
    ```
 
 5. Check the status of your submission:
-   ```
+
+   ```python
    hackerone_get_report_status("report-id")
    ```
 
@@ -146,6 +147,6 @@ For advanced usage, you can create custom workflows that combine these API funct
 
 ## References
 
-- [HackerOne API Documentation](https://api.hackerone.com/docs/)
-- [Bugcrowd API Documentation](https://docs.bugcrowd.com/api/getting-started) 
+- [HackerOne API Documentation](https://docs.hackerone.com/reference/)
+- [Bugcrowd API Documentation](https://docs.bugcrowd.com/reference)
 - [CAI Documentation](https://github.com/aliasrobotics/cai)
