@@ -1,0 +1,71 @@
+# Node and Python environment files
+node_modules/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Large binary files and media
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.mov
+
+# Documentation (already covered by instructions.md)
+docs/
+media/
+
+# Test data
+tests/ignored/
+
+# Log files
+*.log
+
+# Environment and configuration
+.env
+.env.example
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Build and distribution files
+release_to_pypi.sh
+MANIFEST.in
+setup.cfg
+
+# Docker and CI files
+Dockerfile
+ci/

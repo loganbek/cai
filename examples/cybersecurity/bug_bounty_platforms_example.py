@@ -4,7 +4,6 @@ Bug Bounty Platform Integration Example - CAI Framework
 This script demonstrates using CAI with HackerOne and Bugcrowd integration for bug bounty hunting.
 """
 
-from cai.types import Agent
 from cai.core import CAI
 from cai.agents.bug_bounter import bug_bounter_agent
 

@@ -120,9 +120,9 @@ def hackerone_create_report(
         return "Error: Missing HackerOne API credentials. Set HACKERONE_API_TOKEN and HACKERONE_USERNAME environment variables."
     
     url = f"https://api.hackerone.com/v1/hackers/reports"
+    # Use multipart/form-data for file attachments
     headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
+        "Accept": "application/json"
     }
     
     data = {
@@ -141,12 +141,27 @@ def hackerone_create_report(
     }
     
     try:
-        response = requests.post(
-            url, 
-            auth=(api_username, api_token),
-            headers=headers,
-            json=data
-        )
+        if attachments:
+            # Prepare multipart form data: JSON 'data' field and file uploads
+            multipart_data = {"data": json.dumps(data)}
+            files_payload = []
+            for path in attachments:
+                files_payload.append(("attachments[]", open(path, "rb")))
+            response = requests.post(
+                url,
+                auth=(api_username, api_token),
+                headers=headers,
+                data=multipart_data,
+                files=files_payload
+            )
+        else:
+            # Standard JSON request when no files
+            response = requests.post(
+                url,
+                auth=(api_username, api_token),
+                headers={**headers, "Content-Type": "application/json"},
+                json=data
+            )
         
         if response.status_code in [200, 201]:
             return json.dumps(response.json(), indent=2)
@@ -276,7 +291,16 @@ def bugcrowd_create_submission(
         "Content-Type": "application/json",
         "Authorization": f"Token {api_token}"
     }
+      # Validate severity - must be a valid integer between 1 and 5
+    if not severity.isdigit():
+        return "Error: Severity must be a valid integer between 1 and 5."
     
+    severity_int = int(severity) # Convert severity to integer
+    
+     # Check if severity is within the valid range
+    if severity_int < 1 or severity_int > 5:
+        return "Error: Severity must be between 1 and 5, where 5 is critical."
+        
     data = {
         "data": {
             "type": "submission",
@@ -284,22 +308,35 @@ def bugcrowd_create_submission(
                 "title": title,
                 "vulnerability_type": vulnerability_type,
                 "description": description,
-                "severity": int(severity),
+                "severity": severity_int,
                 "steps_to_reproduce": steps,
                 "impact": impact
             }
         }
     }
     
-    try:
-        response = requests.post(url, headers=headers, json=data)
+    if attachments:
+        # Prepare multipart form data: JSON 'data' field and file uploads
+        multipart_data = {"data": json.dumps(data)}
+        files_payload = []
+        for path in attachments:
+            files_payload.append(("attachments[]", open(path, "rb")))
+        response = requests.post(
+            url,
+            headers=headers,
+            data=multipart_data,
+            files=files_payload
+        )
+    else:
+        try:
+            response = requests.post(url, headers=headers, json=data)
         
-        if response.status_code in [200, 201]:
-            return json.dumps(response.json(), indent=2)
-        else:
-            return f"Error: {response.status_code} - {response.text}"
-    except Exception as e:
-        return f"Error: {str(e)}"
+            if response.status_code in [200, 201]:
+                return json.dumps(response.json(), indent=2)
+            else:
+                return f"Error: {response.status_code} - {response.text}"
+        except Exception as e:
+            return f"Error: {str(e)}"
 
 def bugcrowd_get_submission_status(program_uuid: str, submission_uuid: str, ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
