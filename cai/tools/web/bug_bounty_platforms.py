@@ -136,9 +136,7 @@ def hackerone_create_report(
                 "impact": impact,
                 "steps_to_reproduce": reproduction_steps,
                 "severity_rating": severity,
-                "weakness_id": vulnerability_type,
-                # attachments handled via multipart upload
-                "attachments": []
+                "weakness_id": vulnerability_type
             }
         }
     }
