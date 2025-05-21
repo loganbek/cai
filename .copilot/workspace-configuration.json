@@ -19,7 +19,7 @@
           "cai/tools/reconnaissance/**/*.py",
           "cai/tools/exploitation/**/*.py",
           "cai/tools/lateral_movement/**/*.py",
-          "cai/tools/privilege_scalation/**/*.py",
+          "cai/tools/privilege_escalation/**/*.py",
           "cai/tools/command_and_control/**/*.py",
           "cai/tools/data_exfiltration/**/*.py",
           "cai/tools/web/**/*.py",
@@ -81,7 +81,8 @@
       "HACKERONE_API_TOKEN",
       "HACKERONE_USERNAME",
       "BUGCROWD_API_TOKEN",
-      "SHODAN_API_KEY"
+      "SHODAN_API_KEY",
+      "GOOGLE_API_KEY"
     ],
     "platforms": ["Linux", "Windows", "macOS", "Android"]
   },

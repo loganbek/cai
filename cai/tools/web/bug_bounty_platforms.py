@@ -11,6 +11,7 @@ from typing import Dict, List, Optional, Union, Any
 
 def hackerone_get_programs(filter_type: str = "active", ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
+
     Fetches a list of HackerOne programs filtered by the specified type.
     
     Args:
@@ -58,6 +59,7 @@ def hackerone_get_program_details(program_handle: str, ctf=None) -> str:  # pyli
     
     Returns:
         A JSON-formatted string with program details on success, or an error message if credentials are missing or the request fails.
+rmatted string containing the program's details, or an error message if credentials are missing or the request fails.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -96,9 +98,22 @@ def hackerone_create_report(
     ctf=None
 ) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Submits a vulnerability report to a specified HackerOne program.
+    Submits a new vulnerability report to a specified HackerOne program.
     
-    Creates a new report with the given title, vulnerability type, severity, summary, reproduction steps, and optional impact. Returns a JSON-formatted string with the submission result or an error message if credentials are missing or the request fails.
+    Creates and sends a vulnerability report with details such as title, vulnerability type, severity, summary, reproduction steps, and optional impact and attachments. Requires HackerOne API credentials to be set in environment variables.
+    
+    Args:
+        program_handle: The handle (slug) of the HackerOne program.
+        title: Title of the vulnerability report.
+        vulnerability_type: Identifier for the type of vulnerability.
+        severity: Severity rating (e.g., none, low, medium, high, critical).
+        summary: Brief summary of the vulnerability.
+        reproduction_steps: Steps to reproduce the vulnerability.
+        impact: (Optional) Description of the vulnerability's impact.
+        attachments: (Optional) List of file paths to attach.
+    
+    Returns:
+        A JSON-formatted string with the result of the report submission, or an error message if submission fails or credentials are missing.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -106,10 +121,10 @@ def hackerone_create_report(
     if not api_token or not api_username:
         return "Error: Missing HackerOne API credentials. Set HACKERONE_API_TOKEN and HACKERONE_USERNAME environment variables."
     
-    url = f"https://api.hackerone.com/v1/hackers/reports"
+    url = "https://api.hackerone.com/v1/hackers/reports"
+    # Use multipart/form-data for file attachments
     headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
+        "Accept": "application/json"
     }
     
     data = {
@@ -128,12 +143,27 @@ def hackerone_create_report(
     }
     
     try:
-        response = requests.post(
-            url, 
-            auth=(api_username, api_token),
-            headers=headers,
-            json=data
-        )
+        if attachments:
+            # Prepare multipart form data: JSON 'data' field and file uploads
+            multipart_data = {"data": json.dumps(data)}
+            files_payload = []
+            for path in attachments:
+                files_payload.append(("attachments[]", open(path, "rb")))
+            response = requests.post(
+                url,
+                auth=(api_username, api_token),
+                headers=headers,
+                data=multipart_data,
+                files=files_payload
+            )
+        else:
+            # Standard JSON request when no files
+            response = requests.post(
+                url,
+                auth=(api_username, api_token),
+                headers={**headers, "Content-Type": "application/json"},
+                json=data
+            )
         
         if response.status_code in [200, 201]:
             return json.dumps(response.json(), indent=2)
@@ -150,7 +180,7 @@ def hackerone_get_report_status(report_id: str, ctf=None) -> str:  # pylint: dis
         report_id: The unique identifier of the HackerOne report.
     
     Returns:
-        A JSON-formatted string with the report status, or an error message if credentials are missing or the request fails.
+        A JSON-formatted string containing the report status, or an error message if credentials are missing or the request fails.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -179,10 +209,10 @@ def hackerone_get_report_status(report_id: str, ctf=None) -> str:  # pylint: dis
 
 def bugcrowd_get_programs(ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Fetches the list of Bugcrowd programs using the Bugcrowd API.
+    Retrieves a list of Bugcrowd programs using the Bugcrowd API.
     
     Returns:
-        A JSON-formatted string with program data, or an error message if the API token is missing or the request fails.
+        A JSON-formatted string containing program information, or an error message if the API token is missing or the request fails.
     """
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     
@@ -207,14 +237,16 @@ def bugcrowd_get_programs(ctf=None) -> str:  # pylint: disable=unused-argument  
 
 def bugcrowd_get_program_details(program_uuid: str, ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Fetches detailed information for a Bugcrowd program by its UUID.
-    
+    Retrieves detailed information about a specific Bugcrowd program by its UUID.
+
     Args:
         program_uuid: The unique identifier of the Bugcrowd program.
     
     Returns:
+
         A JSON-formatted string with program details, or an error message if the API token is missing or the request fails.
     """
+    
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     
     if not api_token:
@@ -276,7 +308,16 @@ def bugcrowd_create_submission(
         "Content-Type": "application/json",
         "Authorization": f"Token {api_token}"
     }
+      # Validate severity - must be a valid integer between 1 and 5
+    if not severity.isdigit():
+        return "Error: Severity must be a valid integer between 1 and 5."
     
+    severity_int = int(severity) # Convert severity to integer
+    
+     # Check if severity is within the valid range
+    if severity_int < 1 or severity_int > 5:
+        return "Error: Severity must be between 1 and 5, where 5 is critical."
+        
     data = {
         "data": {
             "type": "submission",
@@ -284,22 +325,35 @@ def bugcrowd_create_submission(
                 "title": title,
                 "vulnerability_type": vulnerability_type,
                 "description": description,
-                "severity": int(severity) if severity.isdigit() else ValueError("Severity must be a valid integer."),
+                "severity": severity_int,
                 "steps_to_reproduce": steps,
                 "impact": impact
             }
         }
     }
     
-    try:
-        response = requests.post(url, headers=headers, json=data)
+    if attachments:
+        # Prepare multipart form data: JSON 'data' field and file uploads
+        multipart_data = {"data": json.dumps(data)}
+        files_payload = []
+        for path in attachments:
+            files_payload.append(("attachments[]", open(path, "rb")))
+        response = requests.post(
+            url,
+            headers=headers,
+            data=multipart_data,
+            files=files_payload
+        )
+    else:
+        try:
+            response = requests.post(url, headers=headers, json=data)
         
-        if response.status_code in [200, 201]:
-            return json.dumps(response.json(), indent=2)
-        else:
-            return f"Error: {response.status_code} - {response.text}"
-    except Exception as e:
-        return f"Error: {str(e)}"
+            if response.status_code in [200, 201]:
+                return json.dumps(response.json(), indent=2)
+            else:
+                return f"Error: {response.status_code} - {response.text}"
+        except Exception as e:
+            return f"Error: {str(e)}"
 
 def bugcrowd_get_submission_status(program_uuid: str, submission_uuid: str, ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
@@ -311,6 +365,7 @@ def bugcrowd_get_submission_status(program_uuid: str, submission_uuid: str, ctf=
     
     Returns:
         A JSON-formatted string with the submission status, or an error message if the request fails or credentials are missing.
+
     """
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     

@@ -89,19 +89,22 @@ print(response)
 A typical bug bounty workflow using these integrations might look like:
 
 1. List available programs with scope matching your expertise:
-   ```
+
+   ```python
    hackerone_get_programs()
    ```
 
 2. Get detailed information about an interesting program:
-   ```
+
+   ```python
    hackerone_get_program_details("program-handle")
    ```
 
 3. Conduct testing on in-scope targets using CAI's other tools
 
 4. When a vulnerability is found, prepare and submit a report:
-   ```
+
+   ```python
    hackerone_create_report(
        program_handle="program-handle",
        title="XSS in Search Function",
@@ -113,7 +116,8 @@ A typical bug bounty workflow using these integrations might look like:
    ```
 
 5. Check the status of your submission:
-   ```
+
+   ```python
    hackerone_get_report_status("report-id")
    ```
 
@@ -145,6 +149,6 @@ For advanced usage, you can create custom workflows that combine these API funct
 
 ## References
 
-- [HackerOne API Documentation](https://api.hackerone.com/docs/)
-- [Bugcrowd API Documentation](https://docs.bugcrowd.com/api/getting-started) 
+- [HackerOne API Documentation](https://docs.hackerone.com/reference/)
+- [Bugcrowd API Documentation](https://docs.bugcrowd.com/reference)
 - [CAI Documentation](https://github.com/aliasrobotics/cai)

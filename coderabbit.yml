@@ -16,7 +16,10 @@ smartPrTitle:
 
 # Code review settings
 review:
-  request_changes_workflow: false
+  profile: "chill"
+  request_changes_workflow: true
+  request_changes_workflow_label: "Code Review"
+  request_changes_workflow_label_color: "red"
   path_filters:
     - "cai/**/*.py"
     - "tests/**/*.py"

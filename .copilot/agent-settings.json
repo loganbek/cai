@@ -26,26 +26,31 @@
       {
         "stepId": "understanding",
         "strategy": "thoroughUnderstanding",
+        "description": "Analyze bug bounty requirements and target scope",
         "maxTokenBudget": 6000
       },
       {
         "stepId": "planning",
         "strategy": "comprehensive",
+        "description": "Plan the testing approach and define success criteria",
         "maxTokenBudget": 4000
       },
       {
         "stepId": "research",
         "strategy": "automatic",
+        "description": "Gather information about the target and potential vulnerabilities",
         "maxTokenBudget": 5000
       },
       {
         "stepId": "implementation",
         "strategy": "iterative",
+        "description": "Actively test the application for vulnerabilities",
         "maxTokenBudget": 10000
       },
       {
         "stepId": "review",
         "strategy": "thorough",
+        "description": "Review findings and prepare the final report",
         "maxTokenBudget": 3000
       }
     ]
