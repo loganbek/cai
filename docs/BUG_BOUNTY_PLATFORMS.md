@@ -21,8 +21,8 @@ First, you need to acquire API credentials from the respective platforms:
 1. Create or log into your Bugcrowd account
 2. Request API access from Bugcrowd (as of 2023, API access requires approval)
 3. For more detailed instructions, see our [API Keys Guide](API_KEYS.md#bugcrowd)
-3. Once approved, generate an API token from your account settings
-4. Save your API token
+4. Once approved, generate an API token from your account settings
+5. Save your API token
 
 ### 2. Environment Configuration
 
