@@ -114,9 +114,9 @@ CAI is built on the following core principles:
 - **Modular and agent-centric design**: CAI operates on the basis of agents and agentic patterns, which allows flexibility and scalability. You can easily add the most suitable agents and pattern for your cybersecuritytarget case.
 - **Tool-integration**: CAI integrates already built-in tools, and allows the user to integrate their own tools with their own logic easily.
 - **Logging and tracing integrated**: using [`phoenix`](https://github.com/Arize-ai/phoenix), the open source tracing and logging tool for LLMs. This provides the user with a detailed traceability of the agents and their execution.
-- **Multi-Model Support**: more than 300 supported and empowered by [LiteLLM](https://github.com/BerriAI/litellm). The most popular providers:
-  - **Anthropic**: `Claude 3.7`, `Claude 3.5`, `Claude 3`, `Claude 3 Opus`
+- **Multi-Model Support**: more than 300 supported and empowered by [LiteLLM](https://github.com/BerriAI/litellm). The most popular providers:  - **Anthropic**: `Claude 3.7`, `Claude 3.5`, `Claude 3`, `Claude 3 Opus`
   - **OpenAI**: `O1`, `O1 Mini`, `O3 Mini`, `GPT-4o`, `GPT-4.5 Preview`
+  - **Google**: `Gemini 2.5 Pro`, `Gemini Ultra`
   - **DeepSeek**: `DeepSeek V3`, `DeepSeek R1`
   - **Ollama**: `Qwen2.5 72B`, `Qwen2.5 14B`, etc
 
@@ -271,6 +271,8 @@ cai
 ### :nut_and_bolt: Setup `.env` file
 
 CAI leverages the `.env` file to load configuration at launch. To facilitate the setup, the repo provides an exemplary [`.env.example`](.env.example) file provides a template for configuring CAI's setup and your LLM API keys to work with desired LLM models.
+
+For detailed instructions on obtaining API keys for all supported services (OpenAI, Anthropic, Google Gemini, DeepSeek, HackerOne, Bugcrowd, Shodan, etc.), refer to our [API Keys Guide](docs/API_KEYS.md).
 
 :warning: Important:
 

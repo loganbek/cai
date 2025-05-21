@@ -11,13 +11,14 @@ from typing import Dict, List, Optional, Union, Any
 
 def hackerone_get_programs(filter_type: str = "active", ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Retrieves a list of HackerOne programs filtered by type.
+
+    Fetches a list of HackerOne programs filtered by the specified type.
     
     Args:
-        filter_type: The type of programs to fetch (e.g., "active", "eligible", "enrolled").
+        filter_type: The category of programs to retrieve (e.g., "active", "eligible", "enrolled").
     
     Returns:
-        A JSON-formatted string containing program information, or an error message if credentials are missing or the request fails.
+        A JSON-formatted string with program data, or an error message if credentials are missing or the request fails.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -51,13 +52,14 @@ def hackerone_get_programs(filter_type: str = "active", ctf=None) -> str:  # pyl
 
 def hackerone_get_program_details(program_handle: str, ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Retrieves detailed information about a specific HackerOne program by its handle.
+    Fetches detailed information for a specific HackerOne program by its handle.
     
     Args:
-        program_handle: The unique handle or slug identifying the HackerOne program.
+        program_handle: The unique identifier (slug) of the HackerOne program.
     
     Returns:
-        A JSON-formatted string containing the program's details, or an error message if credentials are missing or the request fails.
+        A JSON-formatted string with program details on success, or an error message if credentials are missing or the request fails.
+rmatted string containing the program's details, or an error message if credentials are missing or the request fails.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -119,7 +121,7 @@ def hackerone_create_report(
     if not api_token or not api_username:
         return "Error: Missing HackerOne API credentials. Set HACKERONE_API_TOKEN and HACKERONE_USERNAME environment variables."
     
-    url = f"https://api.hackerone.com/v1/hackers/reports"
+    url = "https://api.hackerone.com/v1/hackers/reports"
     # Use multipart/form-data for file attachments
     headers = {
         "Accept": "application/json"
@@ -236,13 +238,15 @@ def bugcrowd_get_programs(ctf=None) -> str:  # pylint: disable=unused-argument  
 def bugcrowd_get_program_details(program_uuid: str, ctf=None) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
     Retrieves detailed information about a specific Bugcrowd program by its UUID.
-    
+
     Args:
         program_uuid: The unique identifier of the Bugcrowd program.
     
     Returns:
-        A JSON-formatted string containing the program's details, or an error message if the API token is missing or the request fails.
+
+        A JSON-formatted string with program details, or an error message if the API token is missing or the request fails.
     """
+    
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     
     if not api_token:
@@ -276,9 +280,22 @@ def bugcrowd_create_submission(
     ctf=None
 ) -> str:  # pylint: disable=unused-argument  # noqa: E501
     """
-    Creates a new vulnerability submission for a specified Bugcrowd program.
+    Creates a new vulnerability submission for a Bugcrowd program.
     
-    Submits details such as title, vulnerability type, description, severity, steps to reproduce, impact, and optional attachments to the Bugcrowd API. Returns the API response as a formatted JSON string or an error message if the submission fails.
+    Submits a vulnerability report with details such as title, vulnerability type, description, severity, reproduction steps, and optional impact to the specified Bugcrowd program. Returns a JSON-formatted string with the submission result or an error message if the API token is missing, the request fails, or the severity is invalid.
+    
+    Args:
+        program_uuid: Unique identifier of the Bugcrowd program.
+        title: Title of the vulnerability submission.
+        vulnerability_type: Category or type of the vulnerability.
+        description: Detailed description of the vulnerability.
+        severity: Severity rating as a string representing an integer (1-5, where 5 is critical).
+        steps: Steps to reproduce the vulnerability.
+        impact: Description of the potential impact (optional).
+        attachments: List of file paths to attach (currently not processed).
+    
+    Returns:
+        JSON-formatted string with the submission result or an error message.
     """
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     
@@ -342,8 +359,13 @@ def bugcrowd_get_submission_status(program_uuid: str, submission_uuid: str, ctf=
     """
     Retrieves the status of a Bugcrowd submission by program and submission UUID.
     
+    Args:
+        program_uuid: The unique identifier of the Bugcrowd program.
+        submission_uuid: The unique identifier of the submission.
+    
     Returns:
-        A JSON-formatted string containing the submission status, or an error message if the API token is missing or the request fails.
+        A JSON-formatted string with the submission status, or an error message if the request fails or credentials are missing.
+
     """
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     

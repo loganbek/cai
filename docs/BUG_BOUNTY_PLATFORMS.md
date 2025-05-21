@@ -14,13 +14,15 @@ First, you need to acquire API credentials from the respective platforms:
 2. Go to your [API token settings](https://hackerone.com/settings/api_token)
 3. Generate a new API token with appropriate permissions
 4. Note your username and API token
+5. For more detailed instructions, see our [API Keys Guide](API_KEYS.md#hackerone)
 
 #### Bugcrowd
 
 1. Create or log into your Bugcrowd account
 2. Request API access from Bugcrowd (as of 2023, API access requires approval)
-3. Once approved, generate an API token from your account settings
-4. Save your API token
+3. For more detailed instructions, see our [API Keys Guide](API_KEYS.md#bugcrowd)
+4. Once approved, generate an API token from your account settings
+5. Save your API token
 
 ### 2. Environment Configuration
 
