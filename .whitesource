@@ -1,6 +1,8 @@
 {
   "scanSettings": {
-    "baseBranches": []
+    "baseBranches": ["main", "master"],
+    "configMode": "AUTO",
+    "enableLicenseViolations": true
   },
   "checkRunSettings": {
     "vulnerableCheckRunConclusionLevel": "failure",
@@ -8,7 +10,19 @@
     "useMendCheckNames": true
   },
   "issueSettings": {
-    "minSeverityLevel": "LOW",
-    "issueType": "DEPENDENCY"
+    "minSeverityLevel": "MEDIUM",
+    "issueType": "DEPENDENCY",
+    "severityThreshold": "MEDIUM"
+  },
+  "remediateSettings": {
+    "enableRenovate": true,
+    "extends": ["config:base"],
+    "packageRules": [
+      {
+        "matchUpdateTypes": ["minor", "patch"],
+        "matchCurrentVersion": "!/^0/",
+        "automerge": true
+      }
+    ]
   }
 }
