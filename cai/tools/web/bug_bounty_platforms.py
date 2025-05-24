@@ -57,7 +57,7 @@ def hackerone_get_program_details(program_handle: str, ctf=None) -> str:  # pyli
         program_handle: The unique handle or slug identifying the HackerOne program.
     
     Returns:
-        A JSON-formatted string containing the program's details, or an error message if credentials are missing or the request fails.
+        A JSON-formatted string containing the program\'s details, or an error message if credentials are missing or the request fails.
     """
     api_token = os.getenv("HACKERONE_API_TOKEN")
     api_username = os.getenv("HACKERONE_USERNAME")
@@ -107,7 +107,7 @@ def hackerone_create_report(
         severity: Severity rating (e.g., none, low, medium, high, critical).
         summary: Brief summary of the vulnerability.
         reproduction_steps: Steps to reproduce the vulnerability.
-        impact: (Optional) Description of the vulnerability's impact.
+        impact: (Optional) Description of the vulnerability\'s impact.
         attachments: (Optional) List of file paths to attach.
     
     Returns:
@@ -142,7 +142,7 @@ def hackerone_create_report(
     
     try:
         if attachments:
-            # Prepare multipart form data: JSON 'data' field and file uploads
+            # Prepare multipart form data: JSON \'data\' field and file uploads
             multipart_data = {"data": json.dumps(data)}
             files_payload = []
             for path in attachments:
@@ -241,7 +241,7 @@ def bugcrowd_get_program_details(program_uuid: str, ctf=None) -> str:  # pylint:
         program_uuid: The unique identifier of the Bugcrowd program.
     
     Returns:
-        A JSON-formatted string containing the program's details, or an error message if the API token is missing or the request fails.
+        A JSON-formatted string containing the program\'s details, or an error message if the API token is missing or the request fails.
     """
     api_token = os.getenv("BUGCROWD_API_TOKEN")
     
@@ -316,7 +316,7 @@ def bugcrowd_create_submission(
     }
     
     if attachments:
-        # Prepare multipart form data: JSON 'data' field and file uploads
+        # Prepare multipart form data: JSON \'data\' field and file uploads
         multipart_data = {"data": json.dumps(data)}
         files_payload = []
         for path in attachments:
