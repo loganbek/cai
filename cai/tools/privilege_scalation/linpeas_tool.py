@@ -31,9 +31,6 @@ def run_linpeas(
             "error_message": f"LinPEAS script not found at {script_path} or not executable."
         }
 
-    command = [script_path]
-    if options:
-        command.extend(options)
 
     # Validate options to prevent command injection
     if options:
