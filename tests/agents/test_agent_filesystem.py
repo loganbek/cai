@@ -93,6 +93,37 @@ class TestFilesystemAgent:
                 assert hidden_file in result
 
     @pytest.mark.flaky(reruns=3)
+    def test_agent_read_hidden_file(self):
+        """Test filesystem agent reading hidden file contents"""
+        client = CAI()
+
+        filesystem_agent = Agent(
+            model="qwen2.5:14b",
+            name="Filesystem Agent",
+            instructions="You are an agent that helps users explore and interact with the filesystem.",
+            functions=[list_dir, cat_file]
+        )
+
+        hidden_file_content = "This is a secret hidden file."
+        self.create_test_files(['.super_secret_file.txt'], hidden_file_content)
+
+        prompts = [
+            f"Read the file {self.test_dir}/.super_secret_file.txt",
+            f"What are the contents of {self.test_dir}/.super_secret_file.txt?",
+            f"cat {self.test_dir}/.super_secret_file.txt"
+        ]
+
+        for prompt in prompts:
+            messages = [{"role": "user", "content": prompt}]
+            response = client.run(
+                agent=filesystem_agent,
+                messages=messages,
+                debug=False
+            )
+            result = response.messages[-1]["content"]
+            assert hidden_file_content in result, f"Prompt failed: {prompt}"
+
+    @pytest.mark.flaky(reruns=3)
     def test_agent_read_file(self):
         """Test filesystem agent reading file contents"""
         client = CAI()
