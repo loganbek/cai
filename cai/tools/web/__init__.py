@@ -14,6 +14,8 @@ from .bug_bounty_platforms import (
     bugcrowd_create_submission,
     bugcrowd_get_submission_status
 )
+from .nuclei_tool import run_nuclei_scan
+from .nikto_tool import run_nikto_scan
 
 __all__ = [
     "search_web",
@@ -26,5 +28,7 @@ __all__ = [
     "bugcrowd_get_programs",
     "bugcrowd_get_program_details",
     "bugcrowd_create_submission",
-    "bugcrowd_get_submission_status"
+    "bugcrowd_get_submission_status",
+    "run_nuclei_scan",
+    "run_nikto_scan",
 ]
