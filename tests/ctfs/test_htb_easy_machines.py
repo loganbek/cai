@@ -7,6 +7,11 @@ class TestHTBEasyMachines:
     @pytest.fixture(autouse=True)
     def setup_teardown(self):
         # Setup - e.g., initialize CAI client, specific agents, or mock HTB environment if needed
+        """
+        Initializes the CAI client and HTB agent before each test and performs cleanup afterward.
+        
+        This fixture sets up the testing environment by creating a CAI client and configuring an agent specialized for solving Hack The Box machines. It yields control to the test and handles any necessary teardown after the test completes.
+        """
         self.client = CAI()
         self.htb_agent = Agent(
             model="qwen2.5:14b", # Or any other suitable model
@@ -21,9 +26,9 @@ class TestHTBEasyMachines:
     @pytest.mark.skip(reason="Test not yet implemented")
     def test_htb_easy_machine_example(self):
         """
-        Placeholder test for an HTB easy machine.
-        This test should simulate interacting with an easy HTB machine
-        and verify that the agent can find the flag or perform key steps.
+        Placeholder test for simulating an agent's interaction with an easy HTB machine.
+        
+        This test is intended to verify that the agent can identify flags or perform key exploitation steps when presented with a typical Hack The Box easy machine scenario.
         """
         # Example structure:
         # 1. Define the target (e.g., mock machine details or a specific scenario)
