@@ -60,7 +60,11 @@ class TestFilesystemAgent:
 
     @pytest.mark.flaky(reruns=3)
     def test_agent_list_hidden_files(self):
-        """Test filesystem agent with hidden files"""
+        """
+        Tests that the filesystem agent correctly lists hidden files in a directory.
+        
+        Creates both visible and hidden files in a temporary directory, then sends prompts to the agent requesting hidden files. Asserts that the agent's response includes all expected hidden files and the "tmp" entry.
+        """
         client = CAI()
 
         filesystem_agent = Agent(
@@ -93,8 +97,49 @@ class TestFilesystemAgent:
                 assert hidden_file in result
 
     @pytest.mark.flaky(reruns=3)
+    def test_agent_read_hidden_file(self):
+        """
+        Tests that the filesystem agent can read and return the contents of a hidden file.
+        
+        Creates a hidden file with specific content, sends various prompts to the agent requesting the file's contents, and asserts that the agent's response includes the expected hidden file content.
+        """
+        client = CAI()
+
+        filesystem_agent = Agent(
+            model="qwen2.5:14b",
+            name="Filesystem Agent",
+            instructions="You are an agent that helps users explore and interact with the filesystem.",
+            functions=[list_dir, cat_file]
+        )
+
+        hidden_file_content = "This is a secret hidden file."
+        self.create_test_files(['.super_secret_file.txt'], hidden_file_content)
+
+        prompts = [
+            f"Read the file {self.test_dir}/.super_secret_file.txt",
+            f"What are the contents of {self.test_dir}/.super_secret_file.txt?",
+            f"cat {self.test_dir}/.super_secret_file.txt"
+        ]
+
+        for prompt in prompts:
+            messages = [{"role": "user", "content": prompt}]
+            response = client.run(
+                agent=filesystem_agent,
+                messages=messages,
+                debug=False
+            )
+            result = response.messages[-1]["content"]
+            assert hidden_file_content in result, f"Prompt failed: {prompt}"
+
+    @pytest.mark.flaky(reruns=3)
     def test_agent_read_file(self):
-        """Test filesystem agent reading file contents"""
+        """
+        Tests that the filesystem agent can read and return the contents of various files.
+        
+        Creates several test files with different content types, sends prompts to the agent
+        requesting to read these files, and asserts that the agent's responses contain the
+        expected file contents.
+        """
         client = CAI()
 
         filesystem_agent = Agent(
