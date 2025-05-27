@@ -88,14 +88,22 @@ class FuzzyCommandCompleter(Completer):
         })
     
     def _background_fetch_models(self):
-        """Fetch models in background to avoid blocking the UI."""
+        """
+        Fetches model information in a background thread to prevent UI blocking.
+        
+        Silently ignores any exceptions that occur during the fetch process.
+        """
         try:
             self.fetch_ollama_models()
         except Exception:  # pylint: disable=broad-except
             pass
 
     def fetch_ollama_models(self):  # pylint: disable=too-many-branches,too-many-statements,inconsistent-return-statements,line-too-long # noqa: E501
-        """Fetch available models from Ollama if it's running."""
+        """
+        Fetches and caches available model names from the Ollama API or standard presets.
+        
+        If the Ollama API is reachable, retrieves the current list of models from the running instance; otherwise, falls back to a predefined set of standard models. Updates internal caches for model names and their numeric indices. Limits fetch frequency to once per 60 seconds and silently ignores errors if the API is unavailable.
+        """
         # Only fetch every 60 seconds to avoid excessive API calls
         now = datetime.datetime.now()
         
@@ -143,12 +151,13 @@ class FuzzyCommandCompleter(Completer):
                 # OpenAI O-series models
                 "o1",
                 "o1-mini",
-                "o3-mini",
-
-                # OpenAI GPT models
+                "o3-mini",                # OpenAI GPT models
                 "gpt-4o",
                 "gpt-4-turbo",
                 "gpt-3.5-turbo",
+
+                # Google Gemini models
+                "gemini/gemini-2.5-pro-exp-03-25",
 
                 # DeepSeek models
                 "deepseek/deepseek-chat",

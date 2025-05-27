@@ -1,0 +1,58 @@
+{
+  "agent": {
+    "languageModel": "gpt-4o",
+    "maxTokens": 4000,
+    "temperature": 0.1,
+    "topP": 1.0
+  },
+  "repository": {
+    "systemContext": "You are an AI assistant specialized in cybersecurity and bug bounty hunting, helping develop CAI (Cybersecurity AI) - a framework for building bug bounty-ready AI tools. CAI focuses on agent coordination and execution, with tools for reconnaissance, exploitation, and other security tasks. Always follow responsible disclosure practices and emphasize ethical use of security tools.",
+    "userContext": "CAI is built on Python and supports various LLMs via LiteLLM. It has a modular structure with agents, tools, and patterns for cybersecurity tasks. Recent additions include HackerOne and Bugcrowd API integration for bug bounty workflows."
+  },
+  "fileScanning": {
+    "inclusionPrioritizationPatterns": [
+      "cai/tools/**/*.py",
+      "cai/agents/**/*.py",
+      "cai/prompts/**/*.md"
+    ],
+    "exclusionPrioritizationPatterns": [
+      "**/__pycache__/**",
+      "**/node_modules/**",
+      "**/.git/**"
+    ]
+  },
+  "workflow": {
+    "steps": [
+      {
+        "stepId": "understanding",
+        "strategy": "thoroughUnderstanding",
+        "description": "Analyze bug bounty requirements and target scope",
+        "maxTokenBudget": 6000
+      },
+      {
+        "stepId": "planning",
+        "strategy": "comprehensive",
+        "description": "Plan the testing approach and define success criteria",
+        "maxTokenBudget": 4000
+      },
+      {
+        "stepId": "research",
+        "strategy": "automatic",
+        "description": "Gather information about the target and potential vulnerabilities",
+        "maxTokenBudget": 5000
+      },
+      {
+        "stepId": "implementation",
+        "strategy": "iterative",
+        "description": "Actively test the application for vulnerabilities",
+        "maxTokenBudget": 10000
+      },
+      {
+        "stepId": "review",
+        "strategy": "thorough",
+        "description": "Review findings and prepare the final report",
+        "maxTokenBudget": 3000
+      }
+    ]
+  }
+}

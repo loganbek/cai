@@ -31,19 +31,15 @@ def run_linpeas(
             "error_message": f"LinPEAS script not found at {script_path} or not executable."
         }
 
-
-    # Validate options to prevent command injection
-    if options:
-        for option in options:
-            if not isinstance(option, str) or any(char in option for char in [';', '&', '|', '`', '$']):
-                return {
-                    "status": "error",
-                    "error_message": f"Invalid option detected: {option}. Options must be simple strings."
-                }
-
     command = [script_path]
     if options:
         command.extend(options)
+
+    try:
+        print(f"Running LinPEAS command: {' '.join(command)}")
+        # LinPEAS can produce a very large amount of output.
+        # Consider implications for memory if capturing all to raw_output directly without streaming.
+        process = subprocess.run(command, capture_output=True, text=True, check=False, encoding='utf-8', errors='replace')
 
         raw_output = process.stdout
         stderr_output = process.stderr

@@ -1,0 +1,22 @@
+# Set default behavior for all files to let Git decide
+* text=auto
+
+# Explicitly declare text files you want to always have LF line endings in the repo
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+*.sh text eol=lf
+*.cfg text eol=lf
+*.ini text eol=lf
+# Add other text file extensions as needed
+
+# Declare files that should always have CRLF (less common for cross-platform projects)
+# *.bat text eol=crlf
+# *.ps1 text eol=crlf
+
+# Declare binary files to prevent Git from changing their line endings
+*.png binary
+*.jpg binary
+*.gif binary
+# Add other binary file extensions
