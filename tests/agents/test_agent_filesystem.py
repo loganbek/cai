@@ -60,7 +60,11 @@ class TestFilesystemAgent:
 
     @pytest.mark.flaky(reruns=3)
     def test_agent_list_hidden_files(self):
-        """Test filesystem agent with hidden files"""
+        """
+        Tests that the filesystem agent correctly lists hidden files in a directory.
+        
+        Creates both visible and hidden files in a temporary directory, then sends prompts to the agent requesting hidden files. Asserts that the agent's response includes all expected hidden files and the "tmp" entry.
+        """
         client = CAI()
 
         filesystem_agent = Agent(
@@ -94,7 +98,11 @@ class TestFilesystemAgent:
 
     @pytest.mark.flaky(reruns=3)
     def test_agent_read_hidden_file(self):
-        """Test filesystem agent reading hidden file contents"""
+        """
+        Tests that the filesystem agent can read and return the contents of a hidden file.
+        
+        Creates a hidden file with specific content, sends various prompts to the agent requesting the file's contents, and asserts that the agent's response includes the expected hidden file content.
+        """
         client = CAI()
 
         filesystem_agent = Agent(
@@ -125,7 +133,13 @@ class TestFilesystemAgent:
 
     @pytest.mark.flaky(reruns=3)
     def test_agent_read_file(self):
-        """Test filesystem agent reading file contents"""
+        """
+        Tests that the filesystem agent can read and return the contents of various files.
+        
+        Creates several test files with different content types, sends prompts to the agent
+        requesting to read these files, and asserts that the agent's responses contain the
+        expected file contents.
+        """
         client = CAI()
 
         filesystem_agent = Agent(
