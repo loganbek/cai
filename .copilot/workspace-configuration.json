@@ -4,32 +4,92 @@
     "modules": [
       {
         "name": "Core Framework",
-        "description": "Core functionality of the CAI framework",
-        "paths": ["cai/core.py", "cai/types.py", "cai/util.py", "cai/graph.py"]
+        "description": "Core functionality of the CAI framework including agent orchestration and state management",
+        "paths": ["cai/core.py", "cai/types.py", "cai/util.py", "cai/graph.py"],
+        "interfaces": ["cai/__init__.py"],
+        "capabilities": ["agent_orchestration", "state_management", "handoff_coordination"]
       },
       {
-        "name": "Agents",
-        "description": "Various agent types for cybersecurity tasks",
-        "paths": ["cai/agents/**/*.py"]
+        "name": "Specialized Agents",
+        "description": "Domain-specific agents for different cybersecurity disciplines",
+        "paths": ["cai/agents/**/*.py"],
+        "submodules": {
+          "bug_bounty": "cai/agents/bug_bounter.py",
+          "dfir": "cai/agents/dfir.py", 
+          "red_team": "cai/agents/red_teamer.py",
+          "blue_team": "cai/agents/blue_teamer.py",
+          "network_analysis": "cai/agents/networktraffic_analyzer.py",
+          "code_generation": "cai/agents/codeagent.py",
+          "basic_agent": "cai/agents/basic.py"
+        },
+        "capabilities": ["specialized_expertise", "agent_handoffs", "domain_knowledge"]
       },
       {
-        "name": "Tools",
-        "description": "Security tools organized by kill chain categories",
-        "paths": [
-          "cai/tools/reconnaissance/**/*.py",
-          "cai/tools/exploitation/**/*.py",
-          "cai/tools/lateral_movement/**/*.py",
-          "cai/tools/privilege_escalation/**/*.py",
-          "cai/tools/command_and_control/**/*.py",
-          "cai/tools/data_exfiltration/**/*.py",
-          "cai/tools/web/**/*.py",
-          "cai/tools/misc/**/*.py"
-        ],
+        "name": "Reconnaissance Tools",
+        "description": "Information gathering and target analysis tools following passive-first methodology",
+        "paths": ["cai/tools/reconnaissance/**/*.py"],
+        "tools": ["nmap", "shodan", "dns_enumeration", "subdomain_discovery", "port_scanning"],
+        "safety_level": "passive_preferred",
+        "kill_chain_phase": "reconnaissance"
+      },
+      {
+        "name": "Web Security Tools", 
+        "description": "Web application security testing and analysis tools",
+        "paths": ["cai/tools/web/**/*.py"],
+        "tools": ["nikto", "nuclei", "dirb", "gobuster", "web_crawling", "api_testing"],
+        "integrations": ["bug_bounty_platforms", "google_search"],
+        "safety_level": "authorized_only",
+        "kill_chain_phase": "delivery"
+      },
+      {
+        "name": "Exploitation Tools",
+        "description": "Controlled vulnerability exploitation and proof-of-concept tools",
+        "paths": ["cai/tools/exploitation/**/*.py"], 
+        "tools": ["exploit_execution", "payload_delivery", "vulnerability_validation"],
+        "safety_level": "controlled_environment",
+        "kill_chain_phase": "exploitation"
+      },
+      {
+        "name": "Network Tools",
+        "description": "Network security analysis, monitoring, and traffic capture tools",
+        "paths": ["cai/tools/network/**/*.py"],
+        "tools": ["traffic_capture", "protocol_analysis", "network_monitoring"],
+        "safety_level": "monitoring_focused",
+        "kill_chain_phase": "lateral_movement"
+      },
+      {
+        "name": "Command and Control",
+        "description": "Remote access and persistence tools for authorized testing",
+        "paths": ["cai/tools/command_and_control/**/*.py"],
+        "tools": ["ssh_access", "remote_execution", "session_management"],
+        "safety_level": "authorized_access_only",
+        "kill_chain_phase": "command_and_control"
+      },
+      {
+        "name": "Lateral Movement Tools",
+        "description": "Network traversal and privilege escalation assessment tools",
+        "paths": ["cai/tools/lateral_movement/**/*.py"],
+        "safety_level": "proof_of_concept",
+        "kill_chain_phase": "lateral_movement"
+      },
+      {
+        "name": "Data Analysis Tools",
+        "description": "Data discovery, analysis, and evidence gathering tools",
+        "paths": ["cai/tools/data_exfiltration/**/*.py"],
+        "tools": ["data_discovery", "evidence_collection", "impact_assessment"],
+        "safety_level": "documentation_only",
+        "kill_chain_phase": "actions_on_objectives"
+      },
+      {
+        "name": "Utility Tools",
+        "description": "Supporting utilities and common functions",
+        "paths": ["cai/tools/misc/**/*.py", "cai/tools/others/**/*.py"],
+        "tools": ["reasoning", "code_execution", "file_operations"],
         "interfaces": ["cai/tools/common.py"]
       },
       {
-        "name": "Bug Bounty Tools",
-        "description": "Bug bounty specific functionality and platform integration",
+        "name": "Bug Bounty Integration",
+        "description": "Bug bounty platform integration and workflow automation",
         "paths": [
           "cai/agents/bug_bounter.py",
           "cai/tools/web/bug_bounty_platforms.py",
@@ -39,57 +99,273 @@
           "examples/cybersecurity/bug_bounty_run.py",
           "examples/cybersecurity/bug_bounty_platforms_example.py",
           "examples/cybersecurity/bug_bounty_workflow.py"
-        ]
+        ],
+        "platforms": ["hackerone", "bugcrowd"],
+        "capabilities": ["program_discovery", "report_submission", "status_tracking"]
       },
       {
-        "name": "CLI and REPL",
-        "description": "Command-line interface and interactive shell",
-        "paths": ["cai/cli.py", "cai/repl/**/*.py"]
+        "name": "CLI and Interface",
+        "description": "Command-line interface, REPL, and user interaction systems",
+        "paths": ["cai/cli.py", "cai/repl/**/*.py"],
+        "capabilities": ["interactive_shell", "command_execution", "agent_selection"]
       },
       {
-        "name": "Memory and State",
-        "description": "State tracking and memory management for agents",
-        "paths": ["cai/state/**/*.py", "cai/rag/**/*.py"]
+        "name": "Memory and State Management",
+        "description": "State tracking, memory systems, and persistence management for agents",
+        "paths": ["cai/state/**/*.py", "cai/rag/**/*.py"],
+        "capabilities": ["episodic_memory", "semantic_memory", "state_persistence", "context_management"]
+      },
+      {
+        "name": "Observability and Tracing",
+        "description": "Logging, tracing, and monitoring infrastructure",
+        "paths": ["cai/tracing/**/*.py"],
+        "integrations": ["opentelemetry", "phoenix_tracing"],
+        "capabilities": ["execution_tracing", "performance_monitoring", "audit_logging"]
       }
     ],
     "dependencies": [
       {
         "name": "litellm",
-        "version": "latest",
-        "description": "Unified interface to various LLM providers",
-        "packageManager": "pip"
+        "version": ">=1.65.0",
+        "description": "Unified interface to various LLM providers (OpenAI, Anthropic, Google, Ollama)",
+        "packageManager": "pip",
+        "category": "core",
+        "purpose": "Multi-provider LLM access and model abstraction"
       },
       {
-        "name": "phoenix",
+        "name": "arize-phoenix",
         "version": "latest",
-        "description": "Tracing and logging for LLM operations",
-        "packageManager": "pip" 
+        "description": "Observability and tracing for LLM operations and agent interactions",
+        "packageManager": "pip",
+        "category": "observability",
+        "purpose": "Execution tracing, performance monitoring, and debugging"
+      },
+      {
+        "name": "opentelemetry-api",
+        "version": "latest", 
+        "description": "OpenTelemetry instrumentation for distributed tracing",
+        "packageManager": "pip",
+        "category": "observability",
+        "purpose": "Distributed tracing and telemetry collection"
+      },
+      {
+        "name": "requests",
+        "version": "latest",
+        "description": "HTTP library for API interactions and web requests", 
+        "packageManager": "pip",
+        "category": "networking",
+        "purpose": "HTTP requests for tool integrations and API calls"
+      },
+      {
+        "name": "paramiko",
+        "version": ">=3.5.1",
+        "description": "SSH client implementation for remote access tools",
+        "packageManager": "pip", 
+        "category": "networking",
+        "purpose": "SSH connections and remote command execution"
+      },
+      {
+        "name": "qdrant-client",
+        "version": "latest",
+        "description": "Vector database client for semantic memory and embedding storage",
+        "packageManager": "pip",
+        "category": "memory",
+        "purpose": "Vector storage for agent memory and knowledge retrieval"
+      },
+      {
+        "name": "sentence-transformers",
+        "version": "latest",
+        "description": "Sentence embedding models for semantic analysis",
+        "packageManager": "pip",
+        "category": "memory", 
+        "purpose": "Text embeddings for semantic memory and similarity search"
+      },
+      {
+        "name": "fastapi",
+        "version": ">=0.109.0",
+        "description": "Web framework for API endpoints and web interfaces",
+        "packageManager": "pip",
+        "category": "interface",
+        "purpose": "Web API and dashboard interfaces"
+      },
+      {
+        "name": "prompt-toolkit",
+        "version": "latest",
+        "description": "Interactive command line interface library",
+        "packageManager": "pip",
+        "category": "interface",
+        "purpose": "REPL and interactive command line features"
+      },
+      {
+        "name": "pydantic",
+        "version": ">=2.0.0",
+        "description": "Data validation and serialization library",
+        "packageManager": "pip",
+        "category": "core",
+        "purpose": "Type validation and data modeling"
       }
     ],
     "contextFiles": [
       {
         "path": ".github/copilot/instructions.md",
-        "description": "Repository-wide instructions for Copilot"
+        "description": "Repository-wide instructions and coding standards for Copilot"
+      },
+      {
+        "path": ".github/copilot/agent-guides.md",
+        "description": "Agent-specific development guidelines and best practices"
+      },
+      {
+        "path": ".github/copilot/tool-development.md", 
+        "description": "Tool development standards and security considerations"
+      },
+      {
+        "path": ".github/copilot/testing-methodology.md",
+        "description": "Testing approaches and validation strategies"
+      },
+      {
+        "path": "docs/BUG_BOUNTY_PLATFORMS.md",
+        "description": "Bug bounty platform integration documentation"
+      },
+      {
+        "path": "WINDOWS_SETUP_GUIDE.md",
+        "description": "Windows development environment setup guide"
       }
-    ]
+    ],
+    "testingFramework": {
+      "primaryFramework": "pytest",
+      "testCategories": {
+        "unit": "tests/unit/**/*.py",
+        "integration": "tests/integration/**/*.py", 
+        "architecture": "tests/architecture/**/*.py",
+        "security": "tests/security/**/*.py"
+      },
+      "mockingStrategy": "unittest.mock for external dependencies",
+      "coverageTargets": {
+        "core": "90%",
+        "agents": "80%", 
+        "tools": "75%"
+      }
+    },
+    "developmentWorkflows": {
+      "feature_development": {
+        "steps": ["design", "implement", "test", "document", "review"],
+        "quality_gates": ["type_checking", "linting", "security_scan", "test_coverage"]
+      },
+      "agent_development": {
+        "template": "cai/agents/basic.py",
+        "requirements": ["system_prompt", "handoff_functions", "specialized_tools"],
+        "testing": ["agent_initialization", "tool_integration", "handoff_mechanisms"]
+      },
+      "tool_development": {
+        "template": "cai/tools/common.py",
+        "requirements": ["type_hints", "error_handling", "security_validation"],
+        "safety_checks": ["authorization_required", "impact_assessment", "logging"]
+      }
+    }
   },
   "projectConstraints": {
     "pythonVersion": "3.12",
+    "minimumPythonVersion": "3.10",
     "environmentVariables": [
-      "OPENAI_API_KEY",
-      "ANTHROPIC_API_KEY",
-      "HACKERONE_API_TOKEN",
-      "HACKERONE_USERNAME",
-      "BUGCROWD_API_TOKEN",
-      "SHODAN_API_KEY",
-      "GOOGLE_API_KEY"
+      {
+        "name": "OPENAI_API_KEY",
+        "required": false,
+        "description": "OpenAI API key for GPT model access"
+      },
+      {
+        "name": "ANTHROPIC_API_KEY", 
+        "required": false,
+        "description": "Anthropic API key for Claude model access"
+      },
+      {
+        "name": "GOOGLE_API_KEY",
+        "required": false,
+        "description": "Google API key for Gemini model access"
+      },
+      {
+        "name": "HACKERONE_API_TOKEN",
+        "required": false,
+        "description": "HackerOne API token for bug bounty platform integration"
+      },
+      {
+        "name": "HACKERONE_USERNAME",
+        "required": false,
+        "description": "HackerOne username for API authentication"
+      },
+      {
+        "name": "BUGCROWD_API_TOKEN",
+        "required": false,
+        "description": "Bugcrowd API token for platform integration"
+      },
+      {
+        "name": "SHODAN_API_KEY",
+        "required": false,
+        "description": "Shodan API key for internet-wide scanning data"
+      },
+      {
+        "name": "PERPLEXITY_API_KEY",
+        "required": false,
+        "description": "Perplexity API key for web search functionality"
+      },
+      {
+        "name": "CAI_MODEL",
+        "required": false,
+        "description": "Default model to use for agents (e.g., 'gpt-4o', 'claude-3-5-sonnet-20241022')",
+        "default": "gpt-4o"
+      },
+      {
+        "name": "CAI_TRACING",
+        "required": false,
+        "description": "Enable/disable OpenTelemetry tracing (true/false)",
+        "default": "false"
+      }
     ],
-    "platforms": ["Linux", "Windows", "macOS", "Android"]
+    "platforms": ["Linux", "Windows", "macOS"],
+    "deployment": ["Docker", "Local", "Cloud"],
+    "architectures": ["x86_64", "ARM64"],
+    "securityRequirements": {
+      "apiKeyManagement": "Environment variables only, never in code",
+      "dataHandling": "Minimize data collection, secure storage",
+      "accessControl": "Principle of least privilege",
+      "auditLogging": "Comprehensive activity logging",
+      "encryption": "TLS for all external communications"
+    }
   },
   "ethicalGuidelines": {
     "responsibleUse": true,
     "securityBestPractices": true,
-    "testingConstraints": "Only test on systems with explicit permission",
-    "documentation": "Document all capabilities and limitations of security tools"
+    "authorizationRequired": "Always verify explicit written permission before any active testing",
+    "testingConstraints": "Only test on systems with explicit permission and defined scope",
+    "documentation": "Document all capabilities, limitations, and potential impacts of security tools",
+    "responsibleDisclosure": {
+      "coordinatedDisclosure": "Follow industry-standard coordinated vulnerability disclosure",
+      "timeframes": "Respect platform-specific disclosure timelines",
+      "documentation": "Provide clear reproduction steps and impact assessment",
+      "remediation": "Include specific remediation guidance and recommendations"
+    },
+    "impactMinimization": {
+      "systemDisruption": "Minimize any disruption to target systems",
+      "dataExposure": "Avoid accessing or exfiltrating sensitive data",
+      "proofOfConcept": "Demonstrate vulnerabilities with minimal impact",
+      "cleanup": "Perform immediate cleanup after testing"
+    },
+    "legalCompliance": {
+      "jurisdiction": "Comply with all applicable local and international laws",
+      "authorization": "Maintain documentation of testing authorization",
+      "scope": "Strictly adhere to defined testing scope and boundaries",
+      "reporting": "Follow all required reporting and notification processes"
+    },
+    "defensiveFocus": {
+      "securityImprovement": "Prioritize helping organizations improve security posture",
+      "educationalPurpose": "Emphasize learning and security awareness",
+      "constructiveOutcomes": "Focus on constructive security improvements",
+      "collaboration": "Promote collaboration with security teams and stakeholders"
+    },
+    "toolDevelopment": {
+      "safetyByDesign": "Build safety checks and constraints into all tools",
+      "warningsAndDocumentation": "Provide clear warnings and usage documentation",
+      "minimumViableExploit": "Develop minimal proof-of-concept exploits",
+      "remediationGuidance": "Include remediation guidance with all vulnerability tools"
+    }
   }
 }

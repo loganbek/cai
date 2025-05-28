@@ -3,56 +3,154 @@
     "languageModel": "gpt-4o",
     "maxTokens": 4000,
     "temperature": 0.1,
-    "topP": 1.0
+    "topP": 1.0,
+    "specialization": "cybersecurity",
+    "expertise": [
+      "ethical_hacking",
+      "bug_bounty_hunting", 
+      "vulnerability_assessment",
+      "digital_forensics",
+      "incident_response",
+      "penetration_testing",
+      "responsible_disclosure"
+    ]
   },
   "repository": {
-    "systemContext": "You are an AI assistant specialized in cybersecurity and bug bounty hunting, helping develop CAI (Cybersecurity AI) - a framework for building bug bounty-ready AI tools. CAI focuses on agent coordination and execution, with tools for reconnaissance, exploitation, and other security tasks. Always follow responsible disclosure practices and emphasize ethical use of security tools.",
-    "userContext": "CAI is built on Python and supports various LLMs via LiteLLM. It has a modular structure with agents, tools, and patterns for cybersecurity tasks. Recent additions include HackerOne and Bugcrowd API integration for bug bounty workflows."
+    "systemContext": "You are an expert cybersecurity AI assistant specializing in the CAI (Cybersecurity AI) framework - a comprehensive platform for building production-ready cybersecurity AI agents. CAI implements the cyber kill chain methodology through modular agents and tools, covering reconnaissance, weaponization, delivery, exploitation, installation, command & control, and actions on objectives. Always prioritize responsible disclosure, ethical hacking practices, and maintain strict adherence to legal and authorized testing boundaries. Emphasize defensive cybersecurity applications and help organizations improve their security posture.",
+    "userContext": "CAI leverages Python 3.12+ with LiteLLM for multi-provider LLM support (OpenAI, Anthropic, Google, Ollama). The framework features agent handoffs, state management, memory systems, tracing capabilities, and comprehensive tool integration. Core components include specialized agents (bug bounty, DFIR, red team, blue team, code generation), kill-chain organized tools, HackerOne/Bugcrowd platform integration, and enterprise-grade observability through OpenTelemetry and Phoenix tracing.",
+    "securityPrinciples": {
+      "authorization": "Only test systems with explicit written permission",
+      "disclosure": "Follow coordinated vulnerability disclosure processes",
+      "impact": "Minimize system disruption and data exposure",
+      "documentation": "Maintain detailed logs and evidence chains",
+      "legality": "Comply with all applicable laws and regulations",
+      "ethics": "Prioritize defensive applications and security improvement"
+    }
   },
   "fileScanning": {
     "inclusionPrioritizationPatterns": [
-      "cai/tools/**/*.py",
       "cai/agents/**/*.py",
-      "cai/prompts/**/*.md"
+      "cai/tools/**/*.py", 
+      "cai/prompts/**/*.md",
+      "cai/core.py",
+      "cai/types.py",
+      "cai/util.py",
+      "examples/cybersecurity/**/*.py",
+      "docs/**/*.md",
+      "tests/**/*.py"
     ],
     "exclusionPrioritizationPatterns": [
       "**/__pycache__/**",
       "**/node_modules/**",
-      "**/.git/**"
-    ]
+      "**/.git/**",
+      "**/.env*",
+      "**/dist/**",
+      "**/build/**",
+      "**/*.log",
+      "**/media/**",
+      "**/ci/**"
+    ],
+    "toolCategories": {
+      "reconnaissance": "Information gathering and target analysis tools",
+      "exploitation": "Vulnerability exploitation and proof-of-concept tools", 
+      "lateral_movement": "Network traversal and privilege escalation tools",
+      "command_and_control": "Remote access and persistence tools",
+      "data_exfiltration": "Data extraction and analysis tools",
+      "web": "Web application security testing tools",
+      "network": "Network security analysis and monitoring tools",
+      "misc": "Utility functions and supporting tools"
+    }
   },
   "workflow": {
+    "methodology": "cyber_kill_chain",
+    "phases": [
+      {
+        "phase": "reconnaissance",
+        "description": "Information gathering and target enumeration",
+        "tools": ["nmap", "shodan", "google_search", "dns_enumeration"],
+        "safety": "Passive reconnaissance only, no direct target interaction"
+      },
+      {
+        "phase": "weaponization", 
+        "description": "Exploit development and payload preparation",
+        "tools": ["exploit_development", "payload_generation"],
+        "safety": "Develop proof-of-concepts in isolated environments only"
+      },
+      {
+        "phase": "delivery",
+        "description": "Vulnerability identification and initial access",
+        "tools": ["vulnerability_scanners", "web_testing"],
+        "safety": "Authorized testing environments only"
+      },
+      {
+        "phase": "exploitation",
+        "description": "Controlled exploitation for proof-of-concept",
+        "tools": ["exploit_execution", "privilege_escalation"],
+        "safety": "Minimal impact exploitation, immediate remediation guidance"
+      },
+      {
+        "phase": "post_exploitation",
+        "description": "Impact assessment and evidence gathering",
+        "tools": ["lateral_movement", "data_discovery"],
+        "safety": "Limited scope, documentation focused"
+      },
+      {
+        "phase": "reporting",
+        "description": "Vulnerability documentation and disclosure",
+        "tools": ["report_generation", "platform_submission"],
+        "safety": "Follow responsible disclosure timelines and processes"
+      }
+    ],
     "steps": [
       {
         "stepId": "understanding",
         "strategy": "thoroughUnderstanding",
-        "description": "Analyze bug bounty requirements and target scope",
-        "maxTokenBudget": 6000
+        "description": "Analyze requirements, scope, and authorization boundaries",
+        "maxTokenBudget": 6000,
+        "safetyChecks": ["authorization_verification", "scope_validation"]
       },
       {
-        "stepId": "planning",
+        "stepId": "planning", 
         "strategy": "comprehensive",
-        "description": "Plan the testing approach and define success criteria",
-        "maxTokenBudget": 4000
+        "description": "Develop testing methodology and define success criteria",
+        "maxTokenBudget": 4000,
+        "safetyChecks": ["impact_assessment", "legal_compliance"]
       },
       {
         "stepId": "research",
-        "strategy": "automatic",
-        "description": "Gather information about the target and potential vulnerabilities",
-        "maxTokenBudget": 5000
+        "strategy": "passive_first",
+        "description": "Gather target information using passive techniques",
+        "maxTokenBudget": 5000,
+        "safetyChecks": ["passive_only", "no_direct_interaction"]
       },
       {
-        "stepId": "implementation",
-        "strategy": "iterative",
-        "description": "Actively test the application for vulnerabilities",
-        "maxTokenBudget": 10000
+        "stepId": "testing",
+        "strategy": "controlled_iterative",
+        "description": "Execute controlled security testing with continuous monitoring",
+        "maxTokenBudget": 10000,
+        "safetyChecks": ["authorization_check", "minimal_impact", "immediate_documentation"]
       },
       {
-        "stepId": "review",
-        "strategy": "thorough",
-        "description": "Review findings and prepare the final report",
-        "maxTokenBudget": 3000
+        "stepId": "documentation",
+        "strategy": "comprehensive",
+        "description": "Document findings with remediation guidance",
+        "maxTokenBudget": 4000,
+        "safetyChecks": ["responsible_disclosure", "remediation_focus"]
+      },
+      {
+        "stepId": "disclosure",
+        "strategy": "responsible",
+        "description": "Follow coordinated disclosure processes",
+        "maxTokenBudget": 3000,
+        "safetyChecks": ["platform_guidelines", "timeline_compliance"]
       }
-    ]
+    ],
+    "qualityGates": {
+      "authorization": "Verify explicit testing permission before any active testing",
+      "scope": "Maintain strict adherence to defined testing boundaries", 
+      "impact": "Ensure minimal system disruption and immediate cleanup",
+      "documentation": "Maintain detailed logs and evidence for all activities",
+      "disclosure": "Follow responsible disclosure timelines and processes"
+    }
   }
 }
