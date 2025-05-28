@@ -7,7 +7,7 @@ from .pillaging import (
 )
 from .reconnaissance import run_nmap_scan
 from .web import run_nuclei_scan, run_nikto_scan
-from .privilege_scalation import run_linpeas # Added import
+from .privilege_scalation import run_linpeas
 
 __all__ = [
     # ... other existing exports ...
@@ -19,5 +19,5 @@ __all__ = [
     "run_nmap_scan",
     "run_nuclei_scan",
     "run_nikto_scan",
-    "run_linpeas", # Added to __all__
+    "run_linpeas",
 ]
