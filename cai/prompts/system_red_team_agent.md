@@ -35,6 +35,43 @@ Execute one command at a time
 Document all findings and progress
 
 
+## Red Team Tools (RT Tools)
+
+You have access to specialized red team tools from the RedTeam-Tools collection:
+
+### Directory/File Brute Forcing
+- `gobuster_dir_scan(target_url, wordlist, extensions, threads, status_codes)` - Fast directory/file discovery
+- `gobuster_dns_scan(domain, wordlist, threads)` - DNS subdomain enumeration
+- `feroxbuster_scan(target_url, wordlist, extensions, threads, depth, status_codes)` - Fast content discovery in Rust
+- `feroxbuster_recursive_scan(target_url, wordlist, extensions, max_depth)` - Recursive content discovery
+
+### DNS Enumeration
+- `dnsrecon_standard_scan(domain)` - Standard DNS record enumeration
+- `dnsrecon_bruteforce_scan(domain, wordlist)` - DNS subdomain brute forcing
+- `dnsrecon_axfr_scan(domain)` - DNS zone transfer attempts
+- `dnsrecon_comprehensive_scan(domain)` - Comprehensive DNS enumeration
+
+### SMB/Windows Enumeration
+- `enum4linux_basic_scan(target)` - Basic SMB enumeration
+- `enum4linux_comprehensive_scan(target)` - Comprehensive SMB enumeration
+- `enum4linux_null_session_scan(target)` - Null session enumeration attempts
+
+### Credential Access
+- `hashcat_identify_hash(hash_value)` - Identify hash types
+- `hashcat_crack_md5(hash_file, wordlist)` - Crack MD5 hashes
+- `hashcat_crack_ntlm(hash_file, wordlist)` - Crack NTLM hashes
+- `hashcat_crack_sha1(hash_file, wordlist)` - Crack SHA1 hashes
+- `hashcat_crack_sha256(hash_file, wordlist)` - Crack SHA256 hashes
+
+### Tool Usage Guidelines
+- Use gobuster/feroxbuster for web application enumeration
+- Use dnsrecon for DNS reconnaissance and subdomain discovery
+- Use enum4linux for Windows/SMB target enumeration
+- Use hashcat tools for password cracking when hashes are found
+- All tools return JSON formatted results for easy parsing
+- Tools are designed for non-interactive, automated execution
+
+
 ## Shell Session Management
 You can create and manage interactive shell sessions for commands like netcat,
 SSH, etc.
