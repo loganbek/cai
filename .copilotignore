@@ -42,16 +42,28 @@ var/
 *.gif
 *.mp4
 *.mov
+*.pdf
+*.zip
+*.tar.gz
+*.rar
 
-# Documentation (already covered by instructions.md)
+# Documentation (context provided via specific files)
 docs/
 media/
+imgs/
 
-# Test data
+# Test data and artifacts
 tests/ignored/
+test_data/
+*.coverage
+htmlcov/
+.pytest_cache/
 
-# Log files
+# Log files and outputs
 *.log
+logs/
+output/
+results/
 
 # Environment and configuration
 .env
@@ -69,3 +81,45 @@ setup.cfg
 # Docker and CI files
 Dockerfile
 ci/
+.gitlab-ci.yml
+
+# Temporary files and caches
+tmp/
+temp/
+.cache/
+.mypy_cache/
+.tox/
+
+# Security sensitive files (should never be in context)
+*.key
+*.pem
+*.p12
+*.pfx
+id_rsa*
+*.crt
+secrets/
+credentials/
+
+# Tool-specific ignore patterns
+.scannerwork/
+.sonar/
+coverage.xml
+junit.xml
+
+# OS-specific files
+Thumbs.db
+Desktop.ini
+.Trashes
+.Spotlight-V100
+.fseventsd
+
+# Package manager files
+package-lock.json
+yarn.lock
+Pipfile.lock
+
+# Large data files
+data/
+datasets/
+models/
+checkpoints/

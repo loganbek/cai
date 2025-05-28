@@ -1,0 +1,348 @@
+{
+  "version": "1.1",
+  "agentConfigurations": {
+    "bugBountyAgent": {
+      "name": "Bug Bounty Hunter",
+      "specialization": "web_application_security",
+      "model": "gpt-4o",
+      "temperature": 0.2,
+      "maxTokens": 4000,
+      "systemPrompt": "prompts/system_bug_bounter.md",
+      "capabilities": [
+        "web_reconnaissance",
+        "vulnerability_scanning", 
+        "exploit_development",
+        "report_generation",
+        "platform_integration"
+      ],
+      "tools": {
+        "reconnaissance": [
+          "nmap_scan",
+          "subdomain_enumeration", 
+          "google_search",
+          "shodan_search"
+        ],
+        "web_testing": [
+          "nikto_scan",
+          "nuclei_scan",
+          "directory_busting",
+          "api_testing"
+        ],
+        "platform_integration": [
+          "hackerone_programs",
+          "bugcrowd_programs",
+          "report_submission"
+        ]
+      },
+      "handoffs": [
+        "dfir_agent",
+        "network_analyzer",
+        "code_agent"
+      ],
+      "ethicalConstraints": {
+        "requiresAuthorization": true,
+        "scopeValidation": true,
+        "responsibleDisclosure": true,
+        "impactMinimization": true
+      },
+      "workflow": {
+        "phases": ["reconnaissance", "enumeration", "testing", "validation", "reporting"],
+        "safetyChecks": ["authorization", "scope", "impact_assessment"],
+        "outputFormat": "structured_report"
+      }
+    },
+    
+    "dfirAgent": {
+      "name": "DFIR Specialist", 
+      "specialization": "digital_forensics_incident_response",
+      "model": "gpt-4o",
+      "temperature": 0.1,
+      "maxTokens": 4000,
+      "systemPrompt": "prompts/system_dfir_agent.md",
+      "capabilities": [
+        "digital_forensics",
+        "incident_response",
+        "malware_analysis",
+        "evidence_collection",
+        "timeline_reconstruction"
+      ],
+      "tools": {
+        "forensics": [
+          "file_analysis",
+          "registry_analysis",
+          "memory_forensics",
+          "disk_forensics"
+        ],
+        "network_analysis": [
+          "traffic_analysis",
+          "protocol_analysis", 
+          "session_reconstruction"
+        ],
+        "malware_analysis": [
+          "static_analysis",
+          "dynamic_analysis",
+          "behavioral_analysis"
+        ]
+      },
+      "handoffs": [
+        "network_analyzer",
+        "blue_team_agent",
+        "code_agent"
+      ],
+      "ethicalConstraints": {
+        "evidenceIntegrity": true,
+        "chainOfCustody": true,
+        "privacyProtection": true,
+        "legalCompliance": true
+      },
+      "workflow": {
+        "phases": ["triage", "collection", "analysis", "reconstruction", "reporting"],
+        "safetyChecks": ["authorization", "evidence_integrity", "privacy"],
+        "outputFormat": "forensic_report"
+      }
+    },
+
+    "redTeamAgent": {
+      "name": "Red Team Operator",
+      "specialization": "offensive_security_penetration_testing", 
+      "model": "gpt-4o",
+      "temperature": 0.1,
+      "maxTokens": 4000,
+      "systemPrompt": "prompts/system_red_teamer.md",
+      "capabilities": [
+        "penetration_testing",
+        "adversary_simulation",
+        "attack_path_analysis",
+        "security_control_assessment",
+        "exploitation"
+      ],
+      "tools": {
+        "reconnaissance": [
+          "active_scanning",
+          "service_enumeration",
+          "vulnerability_scanning"
+        ],
+        "exploitation": [
+          "exploit_frameworks",
+          "payload_generation",
+          "privilege_escalation"
+        ],
+        "lateral_movement": [
+          "network_traversal", 
+          "credential_harvesting",
+          "persistence_mechanisms"
+        ]
+      },
+      "handoffs": [
+        "blue_team_agent",
+        "dfir_agent",
+        "network_analyzer"
+      ],
+      "ethicalConstraints": {
+        "explicitAuthorization": true,
+        "scopeBoundaries": true,
+        "minimalImpact": true,
+        "immediateRemediation": true
+      },
+      "workflow": {
+        "phases": ["planning", "reconnaissance", "initial_access", "escalation", "reporting"],
+        "safetyChecks": ["written_authorization", "scope_validation", "impact_minimization"],
+        "outputFormat": "penetration_test_report"
+      }
+    },
+
+    "blueTeamAgent": {
+      "name": "Blue Team Defender",
+      "specialization": "defensive_security_threat_hunting",
+      "model": "gpt-4o", 
+      "temperature": 0.2,
+      "maxTokens": 4000,
+      "systemPrompt": "prompts/system_blue_teamer.md",
+      "capabilities": [
+        "threat_hunting",
+        "security_monitoring",
+        "incident_response",
+        "defense_strategy",
+        "security_control_implementation"
+      ],
+      "tools": {
+        "monitoring": [
+          "siem_analysis",
+          "log_correlation",
+          "anomaly_detection",
+          "threat_intelligence"
+        ],
+        "response": [
+          "incident_containment",
+          "threat_mitigation",
+          "recovery_procedures"
+        ],
+        "improvement": [
+          "security_hardening",
+          "control_assessment",
+          "defense_optimization"
+        ]
+      },
+      "handoffs": [
+        "dfir_agent",
+        "network_analyzer", 
+        "red_team_agent"
+      ],
+      "ethicalConstraints": {
+        "systemProtection": true,
+        "privacyRespect": true,
+        "proactiveDefense": true,
+        "collaboration": true
+      },
+      "workflow": {
+        "phases": ["monitoring", "detection", "analysis", "response", "improvement"],
+        "safetyChecks": ["system_protection", "privacy_compliance"],
+        "outputFormat": "security_assessment_report"
+      }
+    },
+
+    "networkAnalyzer": {
+      "name": "Network Security Analyzer",
+      "specialization": "network_security_traffic_analysis",
+      "model": "gpt-4o",
+      "temperature": 0.15,
+      "maxTokens": 4000,
+      "systemPrompt": "prompts/system_network_analyzer.md",
+      "capabilities": [
+        "network_traffic_analysis",
+        "protocol_analysis",
+        "anomaly_detection",
+        "security_monitoring",
+        "forensic_analysis"
+      ],
+      "tools": {
+        "capture": [
+          "packet_capture",
+          "traffic_monitoring",
+          "session_recording"
+        ],
+        "analysis": [
+          "protocol_analysis",
+          "flow_analysis",
+          "pattern_recognition"
+        ],
+        "detection": [
+          "anomaly_detection",
+          "threat_identification",
+          "attack_pattern_matching"
+        ]
+      },
+      "handoffs": [
+        "dfir_agent",
+        "blue_team_agent",
+        "red_team_agent"
+      ],
+      "ethicalConstraints": {
+        "authorizedMonitoring": true,
+        "privacyProtection": true,
+        "dataMinimization": true,
+        "purposeLimitation": true
+      },
+      "workflow": {
+        "phases": ["capture", "preprocessing", "analysis", "correlation", "reporting"],
+        "safetyChecks": ["monitoring_authorization", "privacy_compliance"],
+        "outputFormat": "network_analysis_report"
+      }
+    },
+
+    "codeAgent": {
+      "name": "Secure Code Specialist",
+      "specialization": "secure_code_generation_analysis",
+      "model": "gpt-4o",
+      "temperature": 0.2,
+      "maxTokens": 4000,
+      "systemPrompt": "prompts/system_code_agent.md",
+      "capabilities": [
+        "secure_code_generation",
+        "code_review",
+        "vulnerability_analysis",
+        "automated_testing",
+        "security_refactoring"
+      ],
+      "tools": {
+        "generation": [
+          "secure_code_templates",
+          "security_pattern_implementation",
+          "defensive_programming"
+        ],
+        "analysis": [
+          "static_analysis",
+          "dynamic_analysis",
+          "security_linting"
+        ],
+        "testing": [
+          "security_test_generation",
+          "penetration_test_automation",
+          "vulnerability_validation"
+        ]
+      },
+      "handoffs": [
+        "bug_bounty_agent",
+        "red_team_agent",
+        "dfir_agent"
+      ],
+      "ethicalConstraints": {
+        "secureByDefault": true,
+        "defensiveProgramming": true,
+        "comprehensiveValidation": true,
+        "securityDocumentation": true
+      },
+      "workflow": {
+        "phases": ["requirements", "design", "implementation", "testing", "review"],
+        "safetyChecks": ["security_validation", "code_quality"],
+        "outputFormat": "secure_code_package"
+      }
+    }
+  },
+
+  "globalSettings": {
+    "defaultModel": "gpt-4o",
+    "fallbackModel": "gpt-4o-mini",
+    "maxRetries": 3,
+    "timeoutSeconds": 300,
+    "tracingEnabled": false,
+    "memoryEnabled": true,
+    "parallelToolCalls": false
+  },
+
+  "safetyFramework": {
+    "authorizationRequired": true,
+    "scopeValidation": true,
+    "impactAssessment": true,
+    "auditLogging": true,
+    "responsibleDisclosure": true,
+    "ethicalGuidelines": "strict",
+    "humanInTheLoop": true
+  },
+
+  "platformIntegration": {
+    "hackerone": {
+      "rateLimit": 100,
+      "retryDelay": 60,
+      "timeout": 30
+    },
+    "bugcrowd": {
+      "rateLimit": 50,
+      "retryDelay": 120,
+      "timeout": 30
+    },
+    "shodan": {
+      "rateLimit": 100,
+      "retryDelay": 3600,
+      "timeout": 15
+    }
+  },
+
+  "qualityAssurance": {
+    "codeReviewRequired": true,
+    "securityValidation": true,
+    "ethicalReview": true,
+    "testCoverage": 80,
+    "documentationRequired": true
+  }
+}
