@@ -1,0 +1,66 @@
+# Git files
+.git
+.gitignore
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environment folders
+env/
+venv/
+.venv/
+
+# Build and distribution artifacts
+build/
+dist/
+wheels/
+*.egg
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Test files and directories (unless tests are run inside the final image)
+tests/
+*.test.yml
+pytest.ini
+
+# Documentation and examples
+docs/
+examples/
+README.md
+WINDOWS_SETUP_GUIDE.md
+DISCLAIMER
+LICENSE*
+model_info.md
+model_info.txt
+
+# CI/CD specific files
+ci/
+coderabbit.yml
+
+# Temporary files
+tmp/
+
+# Docker specific files (already in context or generated)
+Dockerfile
+
+# Project-specific development/utility scripts not needed in image
+cai_setup.bat
+release_to_pypi.sh
+tools/

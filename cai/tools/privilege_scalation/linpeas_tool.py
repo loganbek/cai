@@ -11,19 +11,24 @@ def run_linpeas(
     output_file_path: Optional[str] = None
 ) -> Dict:
     """
-    Runs a LinPEAS script and captures its output.
-
+    Executes the LinPEAS privilege escalation script and returns its output and status.
+    
+    Runs the specified LinPEAS script with optional command-line arguments, captures its standard output and error, and optionally saves the output to a file. Returns a dictionary containing the execution status, raw output, and any relevant error or warning messages.
+    
     Args:
-        script_path: Absolute path to the LinPEAS script (e.g., linpeas.sh).
-        options: Optional list of command-line options for LinPEAS.
-        output_file_path: Optional path to save the raw output of LinPEAS.
-
+        script_path: Absolute path to the LinPEAS script.
+        options: Optional list of command-line arguments to pass to LinPEAS.
+        output_file_path: Optional file path to save the raw output.
+    
     Returns:
-        A dictionary containing:
-            - "status": "success" or "error"
-            - "raw_output": The raw stdout from LinPEAS (can be very large).
-            - "error_message": Error details if status is "error".
-            - "output_saved_to": Path to the saved output file, if provided.
+        A dictionary with keys:
+            - "status": "success" if execution succeeded, otherwise "error".
+            - "raw_output": The full stdout from LinPEAS (may be very large).
+            - "error_message": Present if an error occurred.
+            - "output_saved_to": Path where output was saved, if applicable.
+            - "save_error": If saving output failed.
+            - "warning_linpeas_execution": If LinPEAS exited with a non-zero code.
+            - "stderr_info": Additional stderr information if no warning was set.
     """
     if not os.path.exists(script_path) or not os.access(script_path, os.X_OK):
         return {
