@@ -31,7 +31,8 @@ dependencies = [
     "mkdocs-material>=9.6.0",
     "paramiko>=3.5.1",
     "dnspython",
-    "flask"
+    "flask",
+    "PyPDF2",
 ]
 classifiers = [
     "Typing :: Typed",
@@ -201,6 +202,5 @@ format-command = "ruff format --stdin-filename {filename}"
 [project.scripts]
 cai = "cai.cli:main"
 cai-replay = "tools.replay:main"
-cai-logs = "tools.logs:main"
 cai-asciinema = "tools.asciinema:main"
 cai-gif = "tools.gif:main"

@@ -34,7 +34,7 @@ MANIFEST
 # PyInstaller
 *.manifest
 *.spec
-
+alias_web*
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

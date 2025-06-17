@@ -33,6 +33,11 @@ def get_session_recorder(workspace_name=None):
         DataRecorder: The session recorder instance.
     """
     global _session_recorder
+    
+    # Check if session recording is disabled (e.g., during replay)
+    if os.environ.get("CAI_DISABLE_SESSION_RECORDING", "").lower() == "true":
+        return None
+    
     if _session_recorder is None:
         _session_recorder = DataRecorder(workspace_name)
     return _session_recorder

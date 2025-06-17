@@ -146,3 +146,11 @@ def generic_linux_command(command: str = "",
                        tool_name="generic_linux_command")
     
     return result
+
+@function_tool
+def null_tool() -> str:
+    """
+    This is a null tool that does nothing.
+    NEVER USE THIS TOOL
+    """
+    return "Null tool"

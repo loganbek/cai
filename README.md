@@ -38,10 +38,18 @@
 
 A lightweight, ergonomic framework for building bug bounty-ready Cybersecurity AIs (CAIs).
 
+| CAI with `alias0` on ROS message injection attacks in MiR-100 robot | CAI with `alias0` on API vulnerability discovery at Mercado Libre |
+|-----------------------------------------------|---------------------------------|
+| [![asciicast](https://asciinema.org/a/dNv705hZel2Rzrw0cju9HBGPh.svg)](https://asciinema.org/a/dNv705hZel2Rzrw0cju9HBGPh) | [![asciicast](https://asciinema.org/a/9Hc9z1uFcdNjqP3bY5y7wO1Ww.svg)](https://asciinema.org/a/9Hc9z1uFcdNjqP3bY5y7wO1Ww) |
+
+
 | CAI on JWT@PortSwigger CTF — Cybersecurity AI | CAI on HackableII Boot2Root CTF — Cybersecurity AI |
 |-----------------------------------------------|---------------------------------|
 | [![asciicast](https://asciinema.org/a/713487.svg)](https://asciinema.org/a/713487) | [![asciicast](https://asciinema.org/a/713485.svg)](https://asciinema.org/a/713485) |
 
+
+> [!NOTE]
+> We encourage you to read CAI's the technical report at https://arxiv.org/pdf/2504.06017.
 
 > [!WARNING]
 > :warning: CAI is in active development, so don't expect it to work flawlessly. Instead, contribute by raising an issue or [sending a PR](https://github.com/aliasrobotics/cai/pulls).
@@ -141,6 +149,8 @@ Cybersecurity AI is a critical field, yet many groups are misguidedly pursuing i
 pip install cai-framework
 ```
 
+Always create a new virtual environment to ensure proper dependency installation when updating CAI.
+
 The following subsections provide a more detailed walkthrough on selected popular Operating Systems. Refer to the [Development](#development) section for developer-related install instructions.
 
 ### OS X
@@ -155,7 +165,7 @@ python3.12 -m venv cai_env
 source cai_env/bin/activate && pip install cai-framework
 
 # Generate a .env file and set up with defaults
-echo -e 'OPENAI_API_KEY="sk-1234"\nANTHROPIC_API_KEY=""\nOLLAMA=""\nPROMPT_TOOLKIT_NO_CPR=1' > .env
+echo -e 'OPENAI_API_KEY="sk-1234"\nANTHROPIC_API_KEY=""\nOLLAMA=""\nPROMPT_TOOLKIT_NO_CPR=1\nCAI_STREAM=false' > .env
 
 # Launch CAI
 cai  # first launch it can take up to 30 seconds
@@ -281,6 +291,16 @@ CAI does NOT provide API keys for any model by default. Don't ask us to provide 
 
 The OPENAI_API_KEY must not be left blank. It should contain either "sk-123" (as a placeholder) or your actual API key. See https://github.com/aliasrobotics/cai/issues/27.
 
+:warning: Note:
+
+If you are using alias0 model, make sure that CAI is >0.4.0 version and here you have an .env example to be able to use it.
+
+```bash
+OPENAI_API_KEY="sk-1234"
+OLLAMA=""
+ALIAS_API_KEY="<sk-your-key>"  # note, add yours
+CAI_STEAM=False
+```
 
 ### 🔹 Custom OpenAI Base URL Support
 
@@ -295,6 +315,7 @@ Or directly from the command line:
 ```bash
 OLLAMA_API_BASE="https://custom-openai-proxy.com/v1" cai
 ```
+
 
 ## :triangular_ruler: Architecture:
 

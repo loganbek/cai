@@ -33,6 +33,9 @@ import time
 import argparse
 from typing import Dict, List, Tuple
 
+# Disable session recording for replay tool
+os.environ["CAI_DISABLE_SESSION_RECORDING"] = "true"
+
 # Add the parent directory to the path to import cai modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
